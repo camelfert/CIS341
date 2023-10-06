@@ -1,0 +1,18 @@
+﻿@page "{statusCode:int}"
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h1 class="text-danger">Error.</h1>
+
+@if (Model.origStatusCode == 404)
+{
+    <h2>Sorry! The page or content you were trying to access could not be found.</h2>
+    <strong class="text-danger">Status Code: @Model.origStatusCode</strong><br>
+    <strong>Request ID:</strong> <code>@Model.RequestId</code>
+}
+else {
+    <h2>Sorry! An unexpected error has occurred.</h2>
+    <strong class="text-danger">Status Code: @Model.origStatusCode</strong><br>
+}
