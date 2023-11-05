@@ -1,18 +1,18 @@
-﻿
+﻿@model CIS341_project.ViewModels.BlogPostDTO
 @{
-    Layout = null;
+    ViewData["Title"] = @Model.Title;
 }
 
-<!DOCTYPE html>
+<center>
+<header>
+    <h1>@Model.Title</h1>
+    <h2>Published by @Model.PostAuthor on @Model.DatePublished.ToShortDateString() at @Model.DatePublished.ToShortTimeString()</h2>
+</header>
+<article>
+    <p>@Model.Content</p>
+    <p>@Model.UpvoteCount 👍 | @Model.DownvoteCount 👎</p>
+</article>
+<hr/>
+<h2>@Model.CommentCount comments</h2>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
-<body>
-
-<p>This is the placeholder page where one can view a single/specific blog post currently posted on the website.</p>
-
-</body>
-</html>
+</center>
