@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
 
 namespace CIS341_project.Models
@@ -14,17 +15,23 @@ namespace CIS341_project.Models
         [DataType(DataType.MultilineText)]
         [Display(Name = "Comment")]
         public string? CommentContent { get; set; }
+        public virtual ICollection<Reaction> Reactions { get; set; }
+        public virtual ICollection<Comment> Replies { get; set; }
+
+        [ForeignKey(nameof(ParentComment))]
+        public int? ParentCommentId { get; set; }
+        public virtual Comment ParentComment { get; set; }
 
         [Required]
-        public Account Author { get; set; }
+        public virtual Account Author { get; set; }
+        public int AuthorId { get; set; }
 
-        public ICollection<Reaction> Reactions { get; set; }
+        [ForeignKey(nameof(AuthorId))]
+        public int AuthorAccountId { get; set; }
 
-        public ICollection<Comment> Replies { get; set; }
+        public int BlogPostId { get; set; }
+        [ForeignKey(nameof(BlogPostId))]
+        public virtual BlogPost BlogPost { get; set; }
 
-        // keeping these here in case necessary later on to attach
-        // comments to specific posts
-        //public int BlogPostId { get; set; }
-        //public BlogPost BlogPost { get; set; }
     }
 }

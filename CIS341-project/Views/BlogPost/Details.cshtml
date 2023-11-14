@@ -10,7 +10,7 @@
 </header>
 <article>
     <p>@Model.Content</p>
-    <p>@Model.UpvoteCount 👍 | @Model.DownvoteCount 👎</p>
+    <p>@ViewData["UpvoteCount"] 👍 | @ViewData["DownvoteCount"] 👎</p>
 </article>
 <hr/>
 <h2>@Model.CommentCount comments</h2>

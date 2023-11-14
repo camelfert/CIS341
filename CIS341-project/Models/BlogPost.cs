@@ -11,10 +11,10 @@ namespace CIS341_project.Models
         public int BlogPostId { get; set; }
 
         [Display(Name = "Author")]
-        public Account PostAuthor { get; set; }
+        public string PostAuthor { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         [Display(Name = "Post Title")]
         public string Title { get; set; }
 
@@ -27,13 +27,9 @@ namespace CIS341_project.Models
         [DataType(DataType.Date)]
         public DateTime DatePublished { get; set; }
 
-        public ICollection<Reaction> Reactions { get; set; }
+        public virtual ICollection<Reaction> Reactions { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-        public int UpvoteCount { get; set; }
-
-        public int DownvoteCount { get; set; }
-
-        public ICollection<Comment> Comments { get; set; }
     }
 
 }

@@ -1,18 +1,21 @@
-﻿
+﻿@model List<BlogPostDTO>
+
 @{
-    
+    ViewData["Title"] = "All Blog Posts";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
-<body>
-
-<p>This is the placeholder page where one can view all blog posts currently posted on the website.</p>
-
-</body>
-</html>
+@foreach (var post in Model)
+{
+    <article class="post-preview">
+        <h2>
+            <a asp-controller="BlogPost" asp-action="Details" asp-route-id="@post.BlogPostId">
+                @post.Title
+            </a>
+        </h2>
+        <p class="post-meta">
+            Posted by @post.PostAuthor on @post.DatePublished.ToString("MMMM dd, yyyy")
+        </p>
+        <p>@post.Content.Substring(0, Math.Min(100, post.Content.Length))... <a asp-controller="BlogPost" asp-action="Details" asp-route-id="@post.BlogPostId">Read more</a></p>
+    </article>
+    <hr>
+}

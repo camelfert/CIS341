@@ -20,5 +20,9 @@ namespace CIS341_project.Models
 
         public Account ReactionAuthor { get; set; }
         public int ReactionAuthorId { get; set; }
+
+        // navigation properties for linking reactions to specific posts
+        public int BlogPostId { get; set; }
+        public BlogPost BlogPost { get; set; }
     }
 }

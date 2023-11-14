@@ -8,10 +8,7 @@ namespace CIS341_project.ViewModels
 
         public string? CommentContent { get; set; }
 
-        public string? Author { get; set; }
-
-        public int? UpvoteCount { get; set; }
-        public int? DownvoteCount { get; set; }
-
+        public string? AuthorUsername { get; set; }
+        public List<CommentDTO> Replies { get; set; }
     }
 }

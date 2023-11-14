@@ -1,17 +1,42 @@
-﻿
-@{
-}
+﻿@model CIS341_project.ViewModels.BlogPostDTO
 
+@{
+    ViewData["Title"] = "Create New Post";
+}
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
+    <title>Create a Blog Post</title>
 </head>
 <body>
-
-<p>This is the placeholder view where an admin can create a new blog post by filling out a form.</p>
+<center>
+<header>
+    <h1>Create a Blog Post</h1>
+    <hr/>
+</header>
+        <form asp-action="Create">
+        <div class="form-group">
+            <label asp-for="Title" class="control-label">Post Title: </label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PostAuthor" class="control-label">Post Author: </label>
+            <textarea asp-for="PostAuthor" class="form-control"></textarea>
+            <span asp-validation-for="PostAuthor" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Content" class="control-label">Post Content: </label>
+            <textarea asp-for="Content" class="form-control"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create Blog Post" class="btn btn-primary" />
+        </div>
+    </form>
+</center>
 
 </body>
 </html>

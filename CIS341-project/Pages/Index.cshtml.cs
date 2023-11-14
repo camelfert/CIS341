@@ -1,3 +1,6 @@
+using CIS341_project.Models;
+using CIS341_project.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -5,8 +8,18 @@ namespace CIS341_project.Pages
 {
     public class IndexModel : PageModel
     {
-        public void OnGet()
+        private readonly BlogContext _context;
+
+        public List<Models.BlogPost> LatestPosts { get; set; }
+
+        public IndexModel(BlogContext context)
         {
+            _context = context;
         }
+
+        public async Task OnGetAsync() => LatestPosts = await _context.BlogPosts
+                .OrderByDescending(p => p.DatePublished)
+                .Take(3)
+                .ToListAsync();
     }
 }
