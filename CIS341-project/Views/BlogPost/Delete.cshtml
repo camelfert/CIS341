@@ -1,20 +1,46 @@
-﻿
+﻿@model BlogPost
+
 @{
-    Layout = null;
+    ViewData["Title"] = "Confirm Deletion";
 }
+<center>
+    <h1>Delete</h1>
+</center>
 
-<!DOCTYPE html>
+<h3>Are you sure you want to delete this post?</h3>
+<div>
+    <h4>Post</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Content)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DatePublished)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DatePublished)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PostAuthor)
+        </dt>
+        @*        <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Author.AccountId)
+        </dd>*@
+    </dl>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
-<body>
-    <header>
-        <h1>@Model.Title</h1>
-        <h2>Published by @Model.PostAuthor on @Model.DatePublished.ToShortDateString() at @Model.DatePublished.ToShortTimeString()</h2>
-    </header>
-
-</body>
-</html>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="BlogPostId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

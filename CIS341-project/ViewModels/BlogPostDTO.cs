@@ -4,7 +4,9 @@ namespace CIS341_project.ViewModels
 {
     public class BlogPostDTO
     {
+
         public int BlogPostId { get; set; }
+
         [Required]
         [StringLength(100)]
         [Display(Name = "Post Title")]

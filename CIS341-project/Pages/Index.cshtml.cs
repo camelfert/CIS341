@@ -3,9 +3,12 @@ using CIS341_project.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CIS341_project.Pages
 {
+
+    [AllowAnonymous]
     public class IndexModel : PageModel
     {
         private readonly BlogContext _context;

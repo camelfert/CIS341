@@ -1,4 +1,5 @@
 ﻿@model CIS341_project.ViewModels.BlogPostDTO
+
 @{
     ViewData["Title"] = @Model.Title;
 }
@@ -11,6 +12,8 @@
 <article>
     <p>@Model.Content</p>
     <p>@ViewData["UpvoteCount"] 👍 | @ViewData["DownvoteCount"] 👎</p>
+        <input type="button" value="Edit Post" onclick="location.href='@Url.Action("Edit", "BlogPost", new { id = Model.BlogPostId })'" />
+        <input type="button" value="Delete Post" onclick="location.href='@Url.Action("Delete", "BlogPost", new { id = Model.BlogPostId })'" />
 </article>
 <hr/>
 <h2>@Model.CommentCount comments</h2>

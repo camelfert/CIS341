@@ -2,7 +2,7 @@
 @model CIS341_project.Pages.IndexModel
 
 @{
-	ViewData["Title"] = "Home";
+    ViewData["Title"] = "Home";
 }
 
 <div class="text-center">
@@ -24,5 +24,7 @@
         </article>
         <hr>
     }
-    
+
+    <input type="button" value="View All Posts" onclick="location.href='@Url.Action("Index", "BlogPost")'" />
+
 </div>
