@@ -7,7 +7,6 @@ namespace CIS341_project.Models
 {
     public class Comment
     {
-        [BindNever]
         [Key]
         public int CommentId { get; set; }
 
@@ -16,20 +15,16 @@ namespace CIS341_project.Models
         [Display(Name = "Comment")]
         public string? CommentContent { get; set; }
         public virtual ICollection<Reaction> Reactions { get; set; }
-        public virtual ICollection<Comment> Replies { get; set; }
+        public virtual ICollection<Comment>? Replies { get; set; }
 
         [ForeignKey(nameof(ParentComment))]
         public int? ParentCommentId { get; set; }
-        public virtual Comment ParentComment { get; set; }
+        public virtual Comment? ParentComment { get; set; }
 
-        [Required]
-        public virtual Account Author { get; set; }
-        public int AuthorId { get; set; }
-
-        [ForeignKey(nameof(AuthorId))]
-        public int AuthorAccountId { get; set; }
-
+        public string AuthorUsername { get; set; }
+        public string AuthorId { get; set; }
         public int BlogPostId { get; set; }
+
         [ForeignKey(nameof(BlogPostId))]
         public virtual BlogPost BlogPost { get; set; }
 

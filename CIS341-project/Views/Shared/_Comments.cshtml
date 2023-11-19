@@ -1,0 +1,26 @@
+﻿@model List<CIS341_project.ViewModels.CommentDTO>
+@Html.Hidden("BlogPostId", ViewData["BlogPostId"])
+@Html.Hidden("ParentCommentId", TempData["ParentCommentId"])
+
+@foreach (var comment in Model)
+{
+    <div>
+        <p>@ViewData["userName"] said: @comment.CommentContent</p>
+        <!-- Add functionality for editing and deleting comments here if the user is authorized -->
+    </div>
+}
+
+@using (Html.BeginForm("Create", "Comment", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.TextArea("CommentContent", "", new { @class = "form-control", placeholder = "Add a comment..." })
+        @Html.ValidationMessage("CommentContent", "", new { @class = "text-danger" })
+    </div>
+
+    @Html.Hidden("BlogPostId", ViewData["BlogPostId"])
+    @Html.Hidden("ParentCommentId", TempData["ParentCommentId"])
+
+    <button type="submit" class="btn btn-primary">Comment</button>
+}

@@ -18,4 +18,6 @@
 <hr/>
 <h2>@Model.CommentCount comments</h2>
 
+    @await Html.PartialAsync("_Comments", Model.Comments)
+
 </center>

@@ -49,7 +49,6 @@ namespace CIS341_project.Controllers
             {
                 var blogPost = _context.BlogPosts
                                .Include(bp => bp.Comments)
-                               .ThenInclude(c => c.Author)
                                .Include(bp => bp.Reactions) // based on Reactions nav property
                                .FirstOrDefault(m => m.BlogPostId == id); // retrieval based on ID
 
@@ -67,7 +66,14 @@ namespace CIS341_project.Controllers
                     DatePublished = blogPost.DatePublished,
                     PostAuthor = blogPost.PostAuthor,
                     CommentCount = blogPost.Comments.Count,
+                    Comments = blogPost.Comments.Select(c => new CommentDTO
+                    {
+                        CommentId = c.CommentId,
+                        CommentContent = c.CommentContent
+                    }).ToList()
                 };
+
+                ViewData["BlogPostId"] = blogPost.BlogPostId;
 
                 var upvoteCount = blogPost.Reactions.Count(r => r.Type == ReactionType.Upvote);
                 var downvoteCount = blogPost.Reactions.Count(r => r.Type == ReactionType.Downvote);

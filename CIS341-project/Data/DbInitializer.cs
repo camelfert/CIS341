@@ -70,6 +70,16 @@ namespace CIS341_project.Data
                 context.BlogPosts.Add(bp);
             }
 
+            //var firstPost = context.BlogPosts.FirstOrDefault();
+            //var comment = new Comment
+            //{
+            //    CommentContent = "This post was fantastic! Such a great read.",
+            //    Author = admin,
+            //    BlogPost = firstPost
+            //};
+            //context.Comments.Add(comment);
+            //context.SaveChanges();
+
             context.SaveChanges();
 
         }

@@ -1,10 +1,33 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CIS341_project.Models;
+using CIS341_project.ViewModels;
+using CIS341_project.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.Design;
 
 namespace CIS341_project.Controllers
 {
     public class CommentController : Controller
     {
+        private readonly BlogContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public CommentController(BlogContext context, UserManager<IdentityUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
+        private async Task<(string userId, string userName)> GetUserDetailsAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return (user?.Id, user?.UserName);
+        }
+
         // GET: CommentController
         public ActionResult Index()
         {
@@ -14,28 +37,83 @@ namespace CIS341_project.Controllers
         // GET: CommentController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var comment = _context.Comments
+                                  .Include(c => c.AuthorUsername)
+                                  .FirstOrDefault(c => c.CommentId == id);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            var commentDTO = new CommentDTO
+            {
+                CommentId = comment.CommentId,
+                CommentContent = comment.CommentContent
+
+            };
+
+            return View(commentDTO);
         }
 
-        // GET: CommentController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
 
         // POST: CommentController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        [Authorize]
+        public async Task<IActionResult> Create([Bind("BlogPostId,CommentId,CommentContent")] CommentDTO commentDTO)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var (userId, userName) = await GetUserDetailsAsync();
+                var comment = new Comment
+                {
+                    CommentId = commentDTO.CommentId,
+                    CommentContent = commentDTO.CommentContent,
+                    BlogPostId = commentDTO.BlogPostId,
+                    AuthorId = userId,
+                    AuthorUsername = userName
+                };
+
+                _context.Comments.Add(comment);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Details", "BlogPost", new { id = commentDTO.BlogPostId });
             }
-            catch
+
+            return View();
+        }
+        public ActionResult Reply(int parentCommentId)
+        {
+            TempData["ParentCommentId"] = parentCommentId;
+            return View(new CommentDTO());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> CreateReply(CommentDTO commentDTO, int parentCommentId)
+        {
+            if (ModelState.IsValid)
             {
-                return View();
+                var (userId, userName) = await GetUserDetailsAsync();
+                var reply = new Comment
+                {
+                    CommentId = commentDTO.CommentId,
+                    CommentContent = commentDTO.CommentContent,
+                    BlogPostId = commentDTO.BlogPostId,
+                    ParentCommentId = parentCommentId,
+                    AuthorId = userId,
+                    AuthorUsername = userName
+                };
+
+                _context.Comments.Add(reply);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Details", "BlogPost", new { id = reply.BlogPostId });
             }
+
+            return View(commentDTO);
         }
 
         // GET: CommentController/Edit/5
@@ -79,5 +157,6 @@ namespace CIS341_project.Controllers
                 return View();
             }
         }
+
     }
 }

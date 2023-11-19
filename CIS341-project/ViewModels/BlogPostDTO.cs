@@ -10,20 +10,21 @@ namespace CIS341_project.ViewModels
         [Required]
         [StringLength(100)]
         [Display(Name = "Post Title")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         [Required]
         [DataType(DataType.MultilineText)]
         [Display(Name = "Content")]
-        public string Content { get; set; }
+        public string? Content { get; set; }
 
         [Display(Name = "Publication Date")]
         [DataType(DataType.Date)]
         public DateTime DatePublished { get; set; } = DateTime.Now;
 
         [Display(Name = "Author")]
-        public string PostAuthor { get; set; }
+        public string? PostAuthor { get; set; }
 
+        public List<CommentDTO>? Comments { get; set; }
         public int CommentCount { get; set; }
     }
 }
