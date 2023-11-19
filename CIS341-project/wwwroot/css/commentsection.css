@@ -1,0 +1,48 @@
+﻿.comments-section {
+    margin-top: 20px;
+    max-width: 800px;
+}
+
+.comment-bubble {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    max-width: 600px;
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.comment-body {
+    margin-bottom: 10px;
+}
+
+.comment-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.comment-action-btn {
+    margin-left: 10px; /* Space between buttons */
+    padding: 5px 10px; /* Smaller padding for a more compact look */
+}
+
+.comment-author {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.comment-content {
+    margin-bottom: 10px;
+}
+
+.comment-input {
+    margin-top: 20px;
+}
+
+.reply-button {
+    margin-left: 20px;
+}

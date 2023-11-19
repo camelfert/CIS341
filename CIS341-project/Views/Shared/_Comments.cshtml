@@ -1,26 +1,48 @@
-﻿@model List<CIS341_project.ViewModels.CommentDTO>
+﻿@using CIS341_project.Services
+@inject IUserService UserService
+@model List<CIS341_project.ViewModels.CommentDTO>
 @Html.Hidden("BlogPostId", ViewData["BlogPostId"])
 @Html.Hidden("ParentCommentId", TempData["ParentCommentId"])
 
-@foreach (var comment in Model)
-{
-    <div>
-        <p>@ViewData["userName"] said: @comment.CommentContent</p>
-        <!-- Add functionality for editing and deleting comments here if the user is authorized -->
-    </div>
+@{
+    var currentUser = await UserService.GetUserDetailsAsync();
 }
 
-@using (Html.BeginForm("Create", "Comment", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
+<div class="comments-section">
+    @foreach (var comment in Model)
+    {
+        <div class="comment-bubble">
+            <div class="comment-body">
+                <p class="comment-author">@comment.AuthorUsername said:</p>
+                <p class="comment-content">@comment.CommentContent</p>
+            </div>
+            <div class="comment-actions">
+                @if (comment.AuthorId == currentUser.userId)
+                {
+                    <button class="btn btn-primary comment-action-btn btn-sm">Edit</button>
+                    <button class="btn btn-danger comment-action-btn btn-sm">Delete</button>
+                }
 
-    <div class="form-group">
-        @Html.TextArea("CommentContent", "", new { @class = "form-control", placeholder = "Add a comment..." })
-        @Html.ValidationMessage("CommentContent", "", new { @class = "text-danger" })
-    </div>
+                <button class="reply-button btn btn-success comment-action-btn btn-sm">Reply</button>
+            </div>
+        </div>
 
-    @Html.Hidden("BlogPostId", ViewData["BlogPostId"])
-    @Html.Hidden("ParentCommentId", TempData["ParentCommentId"])
+    }
 
-    <button type="submit" class="btn btn-primary">Comment</button>
-}
+    @using (Html.BeginForm("Create", "Comment", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.TextArea("CommentContent", "", new { @class = "form-control comment-input", placeholder = "Add a comment..." })
+            @Html.ValidationMessage("CommentContent", "", new { @class = "text-danger" })
+        </div>
+
+        @Html.Hidden("BlogPostId", ViewData["BlogPostId"])
+        @Html.Hidden("ParentCommentId", TempData["ParentCommentId"])
+
+        <br/>
+        <button type="submit" class="btn btn-primary">Comment</button>
+    }
+
+</div>

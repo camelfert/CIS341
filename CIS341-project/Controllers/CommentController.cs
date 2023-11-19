@@ -9,23 +9,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.Design;
+using CIS341_project.Services;
 
 namespace CIS341_project.Controllers
 {
     public class CommentController : Controller
     {
         private readonly BlogContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUserService _userService;
 
-        public CommentController(BlogContext context, UserManager<IdentityUser> userManager)
+        public CommentController(BlogContext context, IUserService userService)
         {
             _context = context;
-            _userManager = userManager;
-        }
-        private async Task<(string userId, string userName)> GetUserDetailsAsync()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            return (user?.Id, user?.UserName);
+            _userService = userService;
         }
 
         // GET: CommentController
@@ -38,7 +34,7 @@ namespace CIS341_project.Controllers
         public ActionResult Details(int id)
         {
             var comment = _context.Comments
-                                  .Include(c => c.AuthorUsername)
+                                  //.Include(c => c.AuthorUsername)
                                   .FirstOrDefault(c => c.CommentId == id);
 
             if (comment == null)
@@ -61,11 +57,12 @@ namespace CIS341_project.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("BlogPostId,CommentId,CommentContent")] CommentDTO commentDTO)
+        public async Task<IActionResult> Create([Bind("BlogPostId,CommentId,CommentContent,AuthorId,AuthorUsername")] CommentDTO commentDTO)
         {
             if (ModelState.IsValid)
             {
-                var (userId, userName) = await GetUserDetailsAsync();
+                var (userId, userName) = await _userService.GetUserDetailsAsync();
+
                 var comment = new Comment
                 {
                     CommentId = commentDTO.CommentId,
@@ -83,6 +80,7 @@ namespace CIS341_project.Controllers
 
             return View();
         }
+
         public ActionResult Reply(int parentCommentId)
         {
             TempData["ParentCommentId"] = parentCommentId;
@@ -94,9 +92,10 @@ namespace CIS341_project.Controllers
         [Authorize]
         public async Task<IActionResult> CreateReply(CommentDTO commentDTO, int parentCommentId)
         {
+            var (userId, userName) = await _userService.GetUserDetailsAsync();
+
             if (ModelState.IsValid)
             {
-                var (userId, userName) = await GetUserDetailsAsync();
                 var reply = new Comment
                 {
                     CommentId = commentDTO.CommentId,

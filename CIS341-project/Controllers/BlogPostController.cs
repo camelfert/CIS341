@@ -6,20 +6,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static CIS341_project.Models.Reaction;
 using Microsoft.AspNetCore.Authorization;
+using CIS341_project.Services;
 
 namespace CIS341_project.Controllers
 {
     public class BlogPostController : Controller
     {
         private readonly BlogContext _context;
+        private readonly IUserService _userService;
 
-        public BlogPostController(BlogContext context)
+        public BlogPostController(BlogContext context, IUserService userService)
         {
             _context = context;
+            _userService = userService;
         }
 
         // GET: BlogPostController
-
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
@@ -69,7 +71,8 @@ namespace CIS341_project.Controllers
                     Comments = blogPost.Comments.Select(c => new CommentDTO
                     {
                         CommentId = c.CommentId,
-                        CommentContent = c.CommentContent
+                        CommentContent = c.CommentContent,
+                        AuthorUsername = c.AuthorUsername
                     }).ToList()
                 };
 
@@ -152,7 +155,6 @@ namespace CIS341_project.Controllers
                 Content = blogPost.Content,
                 DatePublished = blogPost.DatePublished,
                 PostAuthor = blogPost.PostAuthor
-                
             };
 
             return View(blogPostDTO);

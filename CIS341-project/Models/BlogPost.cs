@@ -28,7 +28,7 @@ namespace CIS341_project.Models
         public DateTime DatePublished { get; set; }
 
         public virtual ICollection<Reaction> Reactions { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual ICollection<Comment> Comments { get; set; }
 
     }
 

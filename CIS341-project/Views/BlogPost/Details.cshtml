@@ -12,12 +12,11 @@
 <article>
     <p>@Model.Content</p>
     <p>@ViewData["UpvoteCount"] 👍 | @ViewData["DownvoteCount"] 👎</p>
-        <input type="button" value="Edit Post" onclick="location.href='@Url.Action("Edit", "BlogPost", new { id = Model.BlogPostId })'" />
-        <input type="button" value="Delete Post" onclick="location.href='@Url.Action("Delete", "BlogPost", new { id = Model.BlogPostId })'" />
+        <input class="btn btn-primary comment-action-btn" type="button" value="Edit Post" onclick="location.href='@Url.Action("Edit", "BlogPost", new { id = Model.BlogPostId })'" />
+        <input class="btn btn-danger comment-action-btn" type="button" value="Delete Post" onclick="location.href='@Url.Action("Delete", "BlogPost", new { id = Model.BlogPostId })'" />
 </article>
 <hr/>
-<h2>@Model.CommentCount comments</h2>
+</center>
+<h2>@Model.CommentCount comments on "@Model.Title"</h2>
 
     @await Html.PartialAsync("_Comments", Model.Comments)
-
-</center>

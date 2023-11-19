@@ -19,14 +19,17 @@ namespace CIS341_project.Models
 
         [ForeignKey(nameof(ParentComment))]
         public int? ParentCommentId { get; set; }
+
         public virtual Comment? ParentComment { get; set; }
 
         public string AuthorUsername { get; set; }
+
         public string AuthorId { get; set; }
+
         public int BlogPostId { get; set; }
 
         [ForeignKey(nameof(BlogPostId))]
-        public virtual BlogPost BlogPost { get; set; }
+        public BlogPost BlogPost { get; set; }
 
     }
 }

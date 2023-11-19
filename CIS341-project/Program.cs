@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using CIS341_project.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
+using CIS341_project.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddMvc(option => option.EnableEndpointRouting = false);
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(option => option.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 
 builder.Services.AddDbContext<BlogContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -19,6 +20,9 @@ builder.Services.AddDbContext<BlogAuthenticationContext>(options =>
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<BlogAuthenticationContext>();
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -45,7 +49,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<BlogContext>();
-        DbInitializer.Initialize(context);
+        CIS341_project.Data.DbInitializer.Initialize(context);
     }
     catch (Exception ex)
     {
