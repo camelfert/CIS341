@@ -16,7 +16,7 @@ builder.Services.AddDbContext<BlogContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDbContext<BlogAuthenticationContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BlogAuthenticationConnection")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("BlogAuthenticationConnection")));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<BlogAuthenticationContext>();
@@ -86,15 +86,6 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapRazorPages();
-//    endpoints.MapControllerRoute(
-//        name: "default",
-//        pattern: "{controller}/{action}/{id}"
-//    );
-//});
 
 app.MapRazorPages();
 app.MapControllerRoute(

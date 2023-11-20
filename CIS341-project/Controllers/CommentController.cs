@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.Design;
 using CIS341_project.Services;
+using static CIS341_project.Models.Reaction;
 
 namespace CIS341_project.Controllers
 {
@@ -44,9 +45,15 @@ namespace CIS341_project.Controllers
             var commentDTO = new CommentDTO
             {
                 CommentId = comment.CommentId,
-                CommentContent = comment.CommentContent
-
+                CommentContent = comment.CommentContent,
+                BlogPostId = comment.BlogPostId
             };
+
+            var comUpvoteCount = comment.Reactions.Count(r => r.Type == ReactionType.Upvote);
+            var comDownvoteCount = comment.Reactions.Count(r => r.Type == ReactionType.Downvote);
+
+            ViewData["comUpvoteCount"] = comUpvoteCount;
+            ViewData["comDownvoteCount"] = comDownvoteCount;
 
             return View(commentDTO);
         }
@@ -115,45 +122,116 @@ namespace CIS341_project.Controllers
         }
 
         // GET: CommentController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            if (id == null || _context.Comments == null)
+            {
+                return NotFound();
+            }
+
+            var comment = await _context.Comments.FindAsync(id);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            var commentDTO = new CommentDTO
+            {
+                CommentId = comment.CommentId,
+                CommentContent = comment.CommentContent,
+                AuthorId = comment.AuthorId, 
+                AuthorUsername = comment.AuthorUsername,
+                BlogPostId = comment.BlogPostId
+            };
+
+            return View(commentDTO);
         }
 
         // POST: CommentController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, CommentDTO commentDTO)
         {
-            try
+            if (id != commentDTO.CommentId)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
+
+            if (ModelState.IsValid)
             {
-                return View();
+                var commentToUpdate = await _context.Comments.FindAsync(id);
+                if (commentToUpdate == null)
+                {
+                    return NotFound();
+                }
+
+                commentToUpdate.CommentContent = commentDTO.CommentContent;
+
+                try
+                {
+                    _context.Update(commentToUpdate);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CommentExists(commentDTO.CommentId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Details", "BlogPost", new { id = commentToUpdate.BlogPostId });
             }
+            return View(commentDTO);
+        }
+
+        private bool CommentExists(int id)
+        {
+            return _context.Comments.Any(c => c.CommentId == id);
         }
 
         // GET: CommentController/Delete/5
-        public ActionResult Delete(int id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
+            if (id == null || _context.Comments == null)
+            {
+                return NotFound();
+            }
+
+            var comment = await _context.Comments
+                .FirstOrDefaultAsync(c => c.CommentId == id);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            return View(comment);
         }
 
         // POST: CommentController/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeletionConfirmed (int id)
         {
-            try
+            if (_context.Comments == null)
             {
-                return RedirectToAction(nameof(Index));
+                return Problem("Entity set 'BlogContext.Comment'  is null.");
             }
-            catch
+
+            var comment = await _context.Comments.FindAsync(id);
+
+            if (comment != null)
             {
-                return View();
+                _context.Comments.Remove(comment);
             }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", "BlogPost", new { id = comment.BlogPostId });
         }
 
     }

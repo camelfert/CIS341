@@ -79,14 +79,14 @@ namespace CIS341_project.Controllers
                     }).ToList()
                 };
 
-                //ViewData["BlogPostId"] = blogPost.BlogPostId;
+                ViewData["BlogPostId"] = blogPost.BlogPostId;
 
-                var upvoteCount = blogPost.Reactions.Count(r => r.Type == ReactionType.Upvote);
-                var downvoteCount = blogPost.Reactions.Count(r => r.Type == ReactionType.Downvote);
+                var postUpvoteCount = blogPost.Reactions.Count(r => r.Type == ReactionType.Upvote);
+                var postDownvoteCount = blogPost.Reactions.Count(r => r.Type == ReactionType.Downvote);
 
                 // used to pass reaction counts to views
-                ViewData["UpvoteCount"] = upvoteCount;
-                ViewData["DownvoteCount"] = downvoteCount;
+                ViewData["postUpvoteCount"] = postUpvoteCount;
+                ViewData["postDownvoteCount"] = postDownvoteCount;
 
                 return View(blogPostDTO);
             }
