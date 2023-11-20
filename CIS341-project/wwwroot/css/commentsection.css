@@ -22,12 +22,27 @@
 
 .comment-actions {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.comment-vote-btn {
+    margin-right: 5px;
+    padding: 3px 8px;
+}
+
+.comment-action-spacer {
+    flex-grow: 1;
+}
+
+.comment-reactions {
+    display: flex;
+    justify-content: left;
 }
 
 .comment-action-btn {
-    margin-left: 10px; /* Space between buttons */
-    padding: 5px 10px; /* Smaller padding for a more compact look */
+    margin-left: 10px;
+    padding: 5px 10px; 
 }
 
 .comment-author {

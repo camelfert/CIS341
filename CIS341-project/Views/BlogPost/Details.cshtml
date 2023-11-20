@@ -17,6 +17,13 @@
 </article>
 <hr/>
 </center>
-<h2>@Model.CommentCount comments on "@Model.Title"</h2>
+@if (Model.CommentCount == 1)
+{
+    <h2>@Model.CommentCount comment on "@Model.Title"</h2>
+}
+else
+{
+    <h2>@Model.CommentCount comments on "@Model.Title"</h2>
+}
 
     @await Html.PartialAsync("_Comments", Model.Comments)

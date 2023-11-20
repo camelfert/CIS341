@@ -17,6 +17,11 @@
                 <p class="comment-content">@comment.CommentContent</p>
             </div>
             <div class="comment-actions">
+                <button class="btn btn-outline-success btn-sm comment-vote-btn">@ViewData["UpvoteCount"] 👍</button>
+                <button class="btn btn-outline-danger btn-sm comment-vote-btn">@ViewData["DownvoteCount"] 👎</button>
+
+                <div class="comment-action-spacer"></div>
+
                 @if (comment.AuthorId == currentUser.userId)
                 {
                     <button class="btn btn-primary comment-action-btn btn-sm">Edit</button>

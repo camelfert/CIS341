@@ -54,7 +54,22 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error has occurred when attempting to create the database.");
+        logger.LogError(ex, "An error has occurred when attempting to create the BlogDB database.");
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var authContext = services.GetRequiredService<BlogAuthenticationContext>();
+        CIS341_project.Areas.Identity.Data.DbInitializer.Initialize(authContext);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error has occurred when attempting to create the BlogAuthenticationDB database.");
     }
 }
 
