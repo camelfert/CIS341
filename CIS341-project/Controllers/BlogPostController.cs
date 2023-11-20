@@ -60,6 +60,7 @@ namespace CIS341_project.Controllers
                     return NotFound();
                 }
 
+                // MAKE SURE to add any new items for proper data passing HERE, inc. comments
                 var blogPostDTO = new BlogPostDTO
                 {
                     BlogPostId = blogPost.BlogPostId,
@@ -70,13 +71,15 @@ namespace CIS341_project.Controllers
                     CommentCount = blogPost.Comments.Count,
                     Comments = blogPost.Comments.Select(c => new CommentDTO
                     {
+                        BlogPostId = c.BlogPostId,
                         CommentId = c.CommentId,
                         CommentContent = c.CommentContent,
-                        AuthorUsername = c.AuthorUsername
+                        AuthorUsername = c.AuthorUsername,
+                        AuthorId = c.AuthorId
                     }).ToList()
                 };
 
-                ViewData["BlogPostId"] = blogPost.BlogPostId;
+                //ViewData["BlogPostId"] = blogPost.BlogPostId;
 
                 var upvoteCount = blogPost.Reactions.Count(r => r.Type == ReactionType.Upvote);
                 var downvoteCount = blogPost.Reactions.Count(r => r.Type == ReactionType.Downvote);
@@ -118,19 +121,6 @@ namespace CIS341_project.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            // used for debugging form submission issues related to model validity
-            //else
-            //{
-            //    foreach (var modelStateKey in ViewData.ModelState.Keys)
-            //    {
-            //        var value = ViewData.ModelState[modelStateKey];
-            //        foreach (var error in value.Errors)
-            //        {
-            //            var key = modelStateKey;
-            //            var errorMessage = error.ErrorMessage;
-            //        }
-            //    }
-            //}
             return View(blogPostDTO);
         }
 
