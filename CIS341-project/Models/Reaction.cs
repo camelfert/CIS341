@@ -24,5 +24,7 @@ namespace CIS341_project.Models
         // navigation properties for linking reactions to specific posts
         public int BlogPostId { get; set; }
         public BlogPost BlogPost { get; set; }
+        public int CommentId { get; set; }
+        public Comment Comment { get; set; }
     }
 }

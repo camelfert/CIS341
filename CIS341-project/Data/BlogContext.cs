@@ -28,6 +28,11 @@ namespace CIS341_project.Data
                 .HasMany(b => b.Reactions)
                 .WithOne(r => r.BlogPost)
                 .HasForeignKey(r => r.BlogPostId);
+
+            modelBuilder.Entity<Comment>()
+                .HasMany(b => b.Reactions)
+                .WithOne(c => c.Comment)
+                .HasForeignKey(c => c.CommentId);
         }
 
         public DbSet<BlogPost> BlogPosts { get; set; }

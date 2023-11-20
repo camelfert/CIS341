@@ -15,8 +15,8 @@
                 <p class="comment-content">@comment.CommentContent</p>
             </div>
             <div class="comment-actions">
-                <button class="btn btn-outline-success btn-sm comment-vote-btn">@ViewData["UpvoteCount"] 👍</button>
-                <button class="btn btn-outline-danger btn-sm comment-vote-btn">@ViewData["DownvoteCount"] 👎</button>
+                <button class="btn btn-outline-success btn-sm comment-vote-btn">@ViewData["comUpvoteCount"] 👍</button>
+                <button class="btn btn-outline-danger btn-sm comment-vote-btn">@ViewData["comDownvoteCount"] 👎</button>
 
                 <div class="comment-action-spacer"></div>
 
@@ -26,26 +26,37 @@
                     <input class="btn btn-danger comment-action-btn btn-sm" type="button" value="Delete" onclick="location.href='@Url.Action("Delete", "Comment", new { id = comment.CommentId })'" />
                 }
 
-                <button class="reply-button btn btn-success comment-action-btn btn-sm">Reply</button>
+                @if (currentUser.userId != null)
+                {
+                    <button class="reply-button btn btn-success comment-action-btn btn-sm">Reply</button>
+                }
+
             </div>
         </div>
 
     }
 
-    @using (Html.BeginForm("Create", "Comment", FormMethod.Post))
+    @if (currentUser.userId != null)
     {
-        @Html.AntiForgeryToken()
+        @using (Html.BeginForm("Create", "Comment", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
 
-        <div class="form-group">
-            @Html.TextArea("CommentContent", "", new { @class = "form-control comment-input", placeholder = "Add a comment..." })
-            @Html.ValidationMessage("CommentContent", "", new { @class = "text-danger" })
-        </div>
+            <div class="form-group">
+                @Html.TextArea("CommentContent", "", new { @class = "form-control comment-input", placeholder = "Add a comment..." })
+                @Html.ValidationMessage("CommentContent", "", new { @class = "text-danger" })
+            </div>
 
-        @Html.Hidden("BlogPostId", ViewData["BlogPostId"])
-        @Html.Hidden("ParentCommentId", TempData["ParentCommentId"])
+            @Html.Hidden("BlogPostId", ViewData["BlogPostId"])
+            @Html.Hidden("ParentCommentId", TempData["ParentCommentId"])
 
-        <br/>
-        <button type="submit" class="btn btn-primary">Comment</button>
+            <br/>
+            <button type="submit" class="btn btn-primary">Comment</button>
+        }
+    }
+    else
+    {
+        <p>Please <a href="~/Identity/Account/Login">login</a> or <a href="~/Identity/Account/Register">register an account</a> to leave a comment.</p>
     }
 
 </div>
