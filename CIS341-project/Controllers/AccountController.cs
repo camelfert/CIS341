@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CIS341_project.Controllers
@@ -12,6 +13,7 @@ namespace CIS341_project.Controllers
         }
 
         //[HttpGet("Account/AdminPanel")]
+        [Authorize(Roles = "Admin, SuperUser")]
         public IActionResult AdminPanel()
         {
             return View("AdminPanel");

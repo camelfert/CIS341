@@ -1,6 +1,5 @@
 using CIS341_project.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using CIS341_project.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +18,7 @@ builder.Services.AddDbContext<BlogAuthenticationContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("BlogAuthenticationConnection")));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<BlogAuthenticationContext>();
 
 builder.Services.AddScoped<IUserService, UserService>();
@@ -39,6 +39,9 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
+
+    options.AddPolicy("RequireAdministratorRole", policy =>
+    policy.RequireRole("Admin"));
 });
 
 var app = builder.Build();
@@ -50,6 +53,7 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<BlogContext>();
         CIS341_project.Data.DbInitializer.Initialize(context);
+        InitializeUsersRoles.Initialize(services).Wait();
     }
     catch (Exception ex)
     {

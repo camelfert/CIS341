@@ -1,5 +1,15 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
 @inject SignInManager<IdentityUser> SignInManager
+
+@{
+    var isAdmin = false;
+    if (User.Identity.IsAuthenticated)
+    {
+        var user = await UserManager.GetUserAsync(User);
+        isAdmin = await UserManager.IsInRoleAsync(user, "Admin") || await UserManager.IsInRoleAsync(user, "SuperUser");
+    }
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +40,7 @@
                             <a class="nav-link text-dark" asp-controller="BlogPost" asp-action="Index">Posts</a>
                         </li>
 
-                        @if (SignInManager.IsSignedIn(User))
+                        @if (isAdmin)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="BlogPost" asp-action="Create">New Post</a>

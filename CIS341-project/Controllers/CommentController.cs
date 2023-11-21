@@ -31,6 +31,7 @@ namespace CIS341_project.Controllers
         }
 
         // GET: CommentController/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
             var comment = _context.Comments
@@ -87,6 +88,7 @@ namespace CIS341_project.Controllers
             return View();
         }
 
+        [Authorize]
         public ActionResult Reply(int parentCommentId)
         {
             TempData["ParentCommentId"] = parentCommentId;
@@ -122,6 +124,7 @@ namespace CIS341_project.Controllers
         }
 
         // GET: CommentController/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
             if (id == null || _context.Comments == null)
@@ -150,6 +153,7 @@ namespace CIS341_project.Controllers
         // POST: CommentController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, CommentDTO commentDTO)
         {
             if (id != commentDTO.CommentId)
@@ -195,6 +199,7 @@ namespace CIS341_project.Controllers
 
         // GET: CommentController/Delete/5
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             if (id == null || _context.Comments == null)
@@ -216,6 +221,7 @@ namespace CIS341_project.Controllers
         // POST: CommentController/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeletionConfirmed (int id)
         {
             if (_context.Comments == null)

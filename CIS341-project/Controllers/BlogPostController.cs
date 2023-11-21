@@ -96,6 +96,7 @@ namespace CIS341_project.Controllers
 
         // GET: BlogPostController/Create
         [HttpGet]
+        [Authorize(Roles = "Admin, SuperUser")]
         public ActionResult Create()
         {
             return View();
@@ -104,6 +105,7 @@ namespace CIS341_project.Controllers
         // POST: BlogPostController/Create
         [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, SuperUser")]
         public ActionResult Create([Bind("BlogPostId,Title,PostAuthor,Content,DatePublished")] BlogPostDTO blogPostDTO)
         {
             if (ModelState.IsValid)
@@ -125,6 +127,7 @@ namespace CIS341_project.Controllers
         }
 
         // GET: BlogPostController/Edit/5
+        [Authorize(Roles = "Admin, SuperUser")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.BlogPosts == null)
@@ -153,6 +156,7 @@ namespace CIS341_project.Controllers
         // POST: BlogPostController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, SuperUser")]
         public async Task<IActionResult> Edit(int id, BlogPostDTO blogPostDTO)
         {
             if (id != blogPostDTO.BlogPostId)
@@ -198,8 +202,10 @@ namespace CIS341_project.Controllers
         {
             return _context.BlogPosts.Any(e => e.BlogPostId == id);
         }
+
         // GET: BlogPostController/Delete/5
         [HttpGet]
+        [Authorize(Roles = "Admin, SuperUser")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.BlogPosts == null)
@@ -223,6 +229,7 @@ namespace CIS341_project.Controllers
         // POST: BlogPostController/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, SuperUser")]
         public async Task<IActionResult> DeletionConfirmed(int id)
         {
             if (_context.BlogPosts == null)
