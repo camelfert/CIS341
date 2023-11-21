@@ -15,8 +15,23 @@
                 <p class="comment-content">@comment.CommentContent</p>
             </div>
             <div class="comment-actions">
-                <button class="btn btn-outline-success btn-sm comment-vote-btn">@ViewData["comUpvoteCount"] 👍</button>
-                <button class="btn btn-outline-danger btn-sm comment-vote-btn">@ViewData["comDownvoteCount"] 👎</button>
+                <div class="comment-reactions">
+                    @using (Html.BeginForm("Create", "CommentReaction", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("CommentId", comment.CommentId)
+                        @Html.Hidden("Type", "Upvote")
+                        <button class="btn btn-outline-success btn-sm comment-vote-btn">@ViewData[$"commentUpvoteCount{comment.CommentId}"] 👍</button>
+                    }
+
+                    @using (Html.BeginForm("Create", "CommentReaction", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("CommentId", comment.CommentId)
+                        @Html.Hidden("Type", "Downvote")
+                        <button class="btn btn-outline-danger btn-sm comment-vote-btn">@ViewData[$"commentDownvoteCount{comment.CommentId}"] 👎</button>
+                    }
+                </div>
 
                 <div class="comment-action-spacer"></div>
 
@@ -30,10 +45,8 @@
                 {
                     <button class="reply-button btn btn-success comment-action-btn btn-sm">Reply</button>
                 }
-
             </div>
         </div>
-
     }
 
     @if (currentUser.userId != null)

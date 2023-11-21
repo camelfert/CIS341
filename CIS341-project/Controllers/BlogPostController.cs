@@ -4,9 +4,10 @@ using CIS341_project.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static CIS341_project.Models.Reaction;
+using static CIS341_project.Models.PostReaction;
 using Microsoft.AspNetCore.Authorization;
 using CIS341_project.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace CIS341_project.Controllers
 {
@@ -14,11 +15,13 @@ namespace CIS341_project.Controllers
     {
         private readonly BlogContext _context;
         private readonly IUserService _userService;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public BlogPostController(BlogContext context, IUserService userService)
+        public BlogPostController(BlogContext context, IUserService userService, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userService = userService;
+            _userManager = userManager;
         }
 
         // GET: BlogPostController
@@ -51,7 +54,7 @@ namespace CIS341_project.Controllers
             {
                 var blogPost = _context.BlogPosts
                                .Include(bp => bp.Comments)
-                               .Include(bp => bp.Reactions) // based on Reactions nav property
+                               .Include(bp => bp.PostReactions) // based on Reactions nav property
                                .FirstOrDefault(m => m.BlogPostId == id); // retrieval based on ID
 
                 // return NotFound() error if no blog posts are found at this ID
@@ -81,12 +84,25 @@ namespace CIS341_project.Controllers
 
                 ViewData["BlogPostId"] = blogPost.BlogPostId;
 
-                var postUpvoteCount = blogPost.Reactions.Count(r => r.Type == ReactionType.Upvote);
-                var postDownvoteCount = blogPost.Reactions.Count(r => r.Type == ReactionType.Downvote);
+                var postUpvoteCount = _context.PostReactions.Count(r => r.Type == PostReaction.ReactionType.Upvote && r.BlogPostId == id);
+                var postDownvoteCount = _context.PostReactions.Count(r => r.Type == PostReaction.ReactionType.Downvote && r.BlogPostId == id);
 
                 // used to pass reaction counts to views
                 ViewData["postUpvoteCount"] = postUpvoteCount;
                 ViewData["postDownvoteCount"] = postDownvoteCount;
+
+                foreach (var comment in blogPostDTO.Comments)
+                {
+                    int commentUpvoteCount = _context.CommentReactions.Count(r => r.Type == CommentReaction.ReactionType.Upvote && r.CommentId == comment.CommentId);
+                    int commentDownvoteCount = _context.CommentReactions.Count(r => r.Type == CommentReaction.ReactionType.Downvote && r.CommentId == comment.CommentId);
+
+                    ViewData[$"commentUpvoteCount{comment.CommentId}"] = commentUpvoteCount;
+                    ViewData[$"commentDownvoteCount{comment.CommentId}"] = commentDownvoteCount;
+                }
+
+                var userId = _userManager.GetUserId(User);
+                var userReaction = _context.PostReactions.FirstOrDefault(r => r.BlogPostId == id && r.ReactionAuthorId == userId);
+                ViewData["UserReactionType"] = userReaction?.Type.ToString();
 
                 return View(blogPostDTO);
             }

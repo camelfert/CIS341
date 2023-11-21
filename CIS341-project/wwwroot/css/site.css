@@ -16,3 +16,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+.reaction-buttons {
+    display: inline-flex;
+    align-items: center;
+}
+
+.reaction-buttons button {
+    margin-right: 10px; 
+}

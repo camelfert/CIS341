@@ -11,8 +11,25 @@
 </header>
 <article>
     <p>@Model.Content</p>
-    <button class="btn btn-outline-success btn-sm comment-vote-btn">@ViewData["postUpvoteCount"] 👍</button>
-    <button class="btn btn-outline-danger btn-sm comment-vote-btn">@ViewData["postDownvoteCount"] 👎</button>
+    <div class="reaction-buttons">
+        @using (Html.BeginForm("Create", "PostReaction", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.BlogPostId)
+            @Html.Hidden("Type", "Upvote")
+
+            <button class="btn btn-outline-success btn-sm comment-vote-btn" asp-action="Create" asp-controller="PostReaction" asp-route-blogPostId="@Model.BlogPostId" asp-route-reactionType="Upvote" disabled="@ViewData["UserReactionType"]?.Equals("Upvote")">@ViewData["postUpvoteCount"] 👍</button>
+        }
+
+        @using (Html.BeginForm("Create", "PostReaction", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.BlogPostId)
+            @Html.Hidden("Type", "Downvote")
+
+            <button class="btn btn-outline-danger btn-sm comment-vote-btn" asp-action="Create" asp-controller="PostReaction" asp-route-blogPostId="@Model.BlogPostId" asp-route-reactionType="Downvote" disabled="@ViewData["UserReactionType"]?.Equals("Downvote")">@ViewData["postDownvoteCount"] 👎</button>
+        } 
+    </div>
     <br>
     <br>
         <input class="btn btn-primary comment-action-btn" type="button" value="Edit Post" onclick="location.href='@Url.Action("Edit", "BlogPost", new { id = Model.BlogPostId })'" />

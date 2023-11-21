@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.Design;
 using CIS341_project.Services;
-using static CIS341_project.Models.Reaction;
+using static CIS341_project.Models.PostReaction;
 
 namespace CIS341_project.Controllers
 {
@@ -50,8 +50,8 @@ namespace CIS341_project.Controllers
                 BlogPostId = comment.BlogPostId
             };
 
-            var comUpvoteCount = comment.Reactions.Count(r => r.Type == ReactionType.Upvote);
-            var comDownvoteCount = comment.Reactions.Count(r => r.Type == ReactionType.Downvote);
+            var comUpvoteCount = comment.CommentReactions.Count(c => c.Type == CommentReaction.ReactionType.Upvote && c.CommentId == id);
+            var comDownvoteCount = comment.CommentReactions.Count(c => c.Type == CommentReaction.ReactionType.Downvote && c.CommentId == id);
 
             ViewData["comUpvoteCount"] = comUpvoteCount;
             ViewData["comDownvoteCount"] = comDownvoteCount;

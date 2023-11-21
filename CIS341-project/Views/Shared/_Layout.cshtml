@@ -7,7 +7,10 @@
     if (User.Identity.IsAuthenticated)
     {
         var user = await UserManager.GetUserAsync(User);
-        isAdmin = await UserManager.IsInRoleAsync(user, "Admin") || await UserManager.IsInRoleAsync(user, "SuperUser");
+        if (user != null)
+        {
+            isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+        }
     }
 }
 
@@ -40,7 +43,7 @@
                             <a class="nav-link text-dark" asp-controller="BlogPost" asp-action="Index">Posts</a>
                         </li>
 
-                        @if (isAdmin)
+                        @if (User.IsInRole("Admin, SuperUser"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="BlogPost" asp-action="Create">New Post</a>
