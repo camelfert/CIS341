@@ -14,7 +14,7 @@ namespace CIS341_project.Models
         [DataType(DataType.MultilineText)]
         [Display(Name = "Comment")]
         public string? CommentContent { get; set; }
-        public virtual ICollection<Reaction> Reactions { get; set; }
+        public virtual ICollection<CommentReaction> CommentReactions { get; set; }
         public virtual ICollection<Comment>? Replies { get; set; }
 
         [ForeignKey(nameof(ParentComment))]

@@ -4,6 +4,7 @@ using CIS341_project.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CIS341_project.Migrations
 {
     [DbContext(typeof(BlogContext))]
-    partial class BlogContextModelSnapshot : ModelSnapshot
+    [Migration("20231121020100_MoreReactionAdjust")]
+    partial class MoreReactionAdjust
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,32 +114,7 @@ namespace CIS341_project.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("CIS341_project.Models.CommentReaction", b =>
-                {
-                    b.Property<int>("ReactionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReactionId"));
-
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReactionAuthorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("ReactionId");
-
-                    b.HasIndex("CommentId");
-
-                    b.ToTable("CommentReactions");
-                });
-
-            modelBuilder.Entity("CIS341_project.Models.PostReaction", b =>
+            modelBuilder.Entity("CIS341_project.Models.Reaction", b =>
                 {
                     b.Property<int>("ReactionId")
                         .ValueGeneratedOnAdd()
@@ -145,6 +123,9 @@ namespace CIS341_project.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReactionId"));
 
                     b.Property<int>("BlogPostId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CommentId")
                         .HasColumnType("int");
 
                     b.Property<string>("ReactionAuthorId")
@@ -158,7 +139,9 @@ namespace CIS341_project.Migrations
 
                     b.HasIndex("BlogPostId");
 
-                    b.ToTable("PostReactions");
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("Reactions");
                 });
 
             modelBuilder.Entity("CIS341_project.Models.Comment", b =>
@@ -179,38 +162,33 @@ namespace CIS341_project.Migrations
                     b.Navigation("ParentComment");
                 });
 
-            modelBuilder.Entity("CIS341_project.Models.CommentReaction", b =>
-                {
-                    b.HasOne("CIS341_project.Models.Comment", "Comment")
-                        .WithMany("CommentReactions")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Comment");
-                });
-
-            modelBuilder.Entity("CIS341_project.Models.PostReaction", b =>
+            modelBuilder.Entity("CIS341_project.Models.Reaction", b =>
                 {
                     b.HasOne("CIS341_project.Models.BlogPost", "BlogPost")
-                        .WithMany("PostReactions")
+                        .WithMany("Reactions")
                         .HasForeignKey("BlogPostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CIS341_project.Models.Comment", "Comment")
+                        .WithMany("Reactions")
+                        .HasForeignKey("CommentId");
+
                     b.Navigation("BlogPost");
+
+                    b.Navigation("Comment");
                 });
 
             modelBuilder.Entity("CIS341_project.Models.BlogPost", b =>
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("PostReactions");
+                    b.Navigation("Reactions");
                 });
 
             modelBuilder.Entity("CIS341_project.Models.Comment", b =>
                 {
-                    b.Navigation("CommentReactions");
+                    b.Navigation("Reactions");
 
                     b.Navigation("Replies");
                 });

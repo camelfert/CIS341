@@ -1,6 +1,5 @@
 using CIS341_project.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using CIS341_project.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -16,9 +15,10 @@ builder.Services.AddDbContext<BlogContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDbContext<BlogAuthenticationContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BlogAuthenticationConnection")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("BlogAuthenticationConnection")));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<BlogAuthenticationContext>();
 
 builder.Services.AddScoped<IUserService, UserService>();
@@ -39,6 +39,9 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
+
+    options.AddPolicy("RequireAdministratorRole", policy =>
+    policy.RequireRole("Admin"));
 });
 
 var app = builder.Build();
@@ -49,12 +52,34 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<BlogContext>();
+        context.Database.Migrate();
         CIS341_project.Data.DbInitializer.Initialize(context);
+
+        var authContext = services.GetRequiredService<BlogAuthenticationContext>();
+        authContext.Database.Migrate();
+        CIS341_project.Areas.Identity.Data.DbInitializer.Initialize(authContext);
+
+        InitializeUsersRoles.Initialize(services).Wait();
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error has occurred when attempting to create the database.");
+        logger.LogError(ex, "An error has occurred when attempting to create the BlogDB database.");
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var authContext = services.GetRequiredService<BlogAuthenticationContext>();
+        CIS341_project.Areas.Identity.Data.DbInitializer.Initialize(authContext);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error has occurred when attempting to create the BlogAuthenticationDB database.");
     }
 }
 
@@ -71,15 +96,6 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapRazorPages();
-//    endpoints.MapControllerRoute(
-//        name: "default",
-//        pattern: "{controller}/{action}/{id}"
-//    );
-//});
 
 app.MapRazorPages();
 app.MapControllerRoute(

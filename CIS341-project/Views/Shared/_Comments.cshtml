@@ -1,8 +1,6 @@
 ﻿@using CIS341_project.Services
 @inject IUserService UserService
 @model List<CIS341_project.ViewModels.CommentDTO>
-@Html.Hidden("BlogPostId", ViewData["BlogPostId"])
-@Html.Hidden("ParentCommentId", TempData["ParentCommentId"])
 
 @{
     var currentUser = await UserService.GetUserDetailsAsync();
@@ -17,32 +15,61 @@
                 <p class="comment-content">@comment.CommentContent</p>
             </div>
             <div class="comment-actions">
-                @if (comment.AuthorId == currentUser.userId)
+                <div class="comment-reactions">
+                    @using (Html.BeginForm("Create", "CommentReaction", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("CommentId", comment.CommentId)
+                        @Html.Hidden("Type", "Upvote")
+                        <button class="btn btn-outline-success btn-sm comment-vote-btn" asp-action="Create" asp-controller="CommentReaction" asp-route-reactionType="Upvote" disabled="@ViewData[$"UserCommentReactionType{comment.CommentId}"]?.Equals("Upvote")">@ViewData[$"commentUpvoteCount{comment.CommentId}"] 👍</button>
+                    }
+
+                    @using (Html.BeginForm("Create", "CommentReaction", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("CommentId", comment.CommentId)
+                        @Html.Hidden("Type", "Downvote")
+                        <button class="btn btn-outline-danger btn-sm comment-vote-btn" asp-action="Create" asp-controller="CommentReaction" asp-route-reactionType="Downvote" disabled="@ViewData[$"UserCommentReactionType{comment.CommentId}"]?.Equals("Downvote")">@ViewData[$"commentDownvoteCount{comment.CommentId}"] 👎</button>
+                    }
+                </div>
+
+                <div class="comment-action-spacer"></div>
+
+                @if (comment.AuthorId == currentUser.userId || User.IsInRole("Admin") || User.IsInRole("SuperUser"))
                 {
-                    <button class="btn btn-primary comment-action-btn btn-sm">Edit</button>
-                    <button class="btn btn-danger comment-action-btn btn-sm">Delete</button>
+                    <input class="btn btn-primary comment-action-btn btn-sm" type="button" value="Edit" onclick="location.href='@Url.Action("Edit", "Comment", new { id = comment.CommentId })'" />
+                    <input class="btn btn-danger comment-action-btn btn-sm" type="button" value="Delete" onclick="location.href='@Url.Action("Delete", "Comment", new { id = comment.CommentId })'" />
                 }
 
-                <button class="reply-button btn btn-success comment-action-btn btn-sm">Reply</button>
+                @if (currentUser.userId != null)
+                {
+                    <button class="reply-button btn btn-success comment-action-btn btn-sm">Reply</button>
+                }
             </div>
         </div>
-
     }
 
-    @using (Html.BeginForm("Create", "Comment", FormMethod.Post))
+    @if (currentUser.userId != null)
     {
-        @Html.AntiForgeryToken()
+        @using (Html.BeginForm("Create", "Comment", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
 
-        <div class="form-group">
-            @Html.TextArea("CommentContent", "", new { @class = "form-control comment-input", placeholder = "Add a comment..." })
-            @Html.ValidationMessage("CommentContent", "", new { @class = "text-danger" })
-        </div>
+            <div class="form-group">
+                @Html.TextArea("CommentContent", "", new { @class = "form-control comment-input", placeholder = "Add a comment..." })
+                @Html.ValidationMessage("CommentContent", "", new { @class = "text-danger" })
+            </div>
 
-        @Html.Hidden("BlogPostId", ViewData["BlogPostId"])
-        @Html.Hidden("ParentCommentId", TempData["ParentCommentId"])
+            @Html.Hidden("BlogPostId", ViewData["BlogPostId"])
+            @Html.Hidden("ParentCommentId", TempData["ParentCommentId"])
 
-        <br/>
-        <button type="submit" class="btn btn-primary">Comment</button>
+            <br/>
+            <button type="submit" class="btn btn-primary">Comment</button>
+        }
+    }
+    else
+    {
+        <p>Please <a href="~/Identity/Account/Login">login</a> or <a href="~/Identity/Account/Register">register an account</a> to leave a comment.</p>
     }
 
 </div>

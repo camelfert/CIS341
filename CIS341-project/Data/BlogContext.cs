@@ -25,15 +25,21 @@ namespace CIS341_project.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<BlogPost>()
-                .HasMany(b => b.Reactions)
+                .HasMany(b => b.PostReactions)
                 .WithOne(r => r.BlogPost)
                 .HasForeignKey(r => r.BlogPostId);
+
+            modelBuilder.Entity<Comment>()
+                .HasMany(b => b.CommentReactions)
+                .WithOne(c => c.Comment)
+                .HasForeignKey(c => c.CommentId);
         }
 
         public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Reaction> Reactions { get; set; }
+        public DbSet<PostReaction> PostReactions { get; set; }
+        public DbSet<CommentReaction> CommentReactions { get; set; }
 
     }
 }

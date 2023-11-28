@@ -16,3 +16,22 @@ html {
 body {
   margin-bottom: 60px;
 }
+.reaction-buttons {
+    display: inline-flex;
+    align-items: center;
+}
+
+.reaction-buttons button {
+    margin-right: 10px; 
+}
+
+.navbar-brand {
+    color: #685ab2;
+}
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+    color: #685ab2;
+}

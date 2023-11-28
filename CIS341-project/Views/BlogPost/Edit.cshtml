@@ -4,8 +4,6 @@
 }
 
 <h1>Edit Post</h1>
-
-<h4>Post</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -23,20 +21,11 @@
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PostAuthor" class="control-label"></label>
-                <input asp-for="PostAuthor" class="form-control" />
-                <span asp-validation-for="PostAuthor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
                 <input asp-for="Content" class="form-control" />
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DatePublished" class="control-label"></label>
-                <input asp-for="DatePublished" class="form-control" />
-                <span asp-validation-for="DatePublished" class="text-danger"></span>
-            </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

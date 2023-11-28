@@ -19,7 +19,7 @@ namespace CIS341_project.ViewModels
 
         [Display(Name = "Publication Date")]
         [DataType(DataType.Date)]
-        public DateTime DatePublished { get; set; } = DateTime.Now;
+        public DateTime DatePublished { get; set; }
 
         [Display(Name = "Author")]
         public string? PostAuthor { get; set; }

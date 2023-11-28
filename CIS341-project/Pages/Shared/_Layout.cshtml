@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,7 +13,6 @@
     <title>@ViewData["Title"] - The Lunchbox</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/CIS341_project.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -25,14 +31,20 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="BlogPost" asp-action="Index">Posts</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="BlogPost" asp-action="Create">New Post</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Account" asp-action="Index">Manage Account</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Account" asp-action="AdminPanel">Admin Panel</a>
+
+                        @if (User.IsInRole("Admin") || User.IsInRole("SuperUser"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="BlogPost" asp-action="Create">New Post</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Index">Manage Account</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="AdminPanel">Admin Panel</a>
+                            </li>
+                        }
+
                     </ul>
                     <partial name="_LoginPartial"/>
                 </div>

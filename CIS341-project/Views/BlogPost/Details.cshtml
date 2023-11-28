@@ -11,12 +11,39 @@
 </header>
 <article>
     <p>@Model.Content</p>
-    <p>@ViewData["UpvoteCount"] 👍 | @ViewData["DownvoteCount"] 👎</p>
+    <div class="reaction-buttons">
+        @using (Html.BeginForm("Create", "PostReaction", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.BlogPostId)
+            @Html.Hidden("Type", "Upvote")
+
+            <button class="btn btn-outline-success btn-sm comment-vote-btn" asp-action="Create" asp-controller="PostReaction" asp-route-blogPostId="@Model.BlogPostId" asp-route-reactionType="Upvote" disabled="@ViewData["UserReactionType"]?.Equals("Upvote")">@ViewData["postUpvoteCount"] 👍</button>
+        }
+
+        @using (Html.BeginForm("Create", "PostReaction", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.BlogPostId)
+            @Html.Hidden("Type", "Downvote")
+
+            <button class="btn btn-outline-danger btn-sm comment-vote-btn" asp-action="Create" asp-controller="PostReaction" asp-route-blogPostId="@Model.BlogPostId" asp-route-reactionType="Downvote" disabled="@ViewData["UserReactionType"]?.Equals("Downvote")">@ViewData["postDownvoteCount"] 👎</button>
+        } 
+    </div>
+    <br>
+    <br>
         <input class="btn btn-primary comment-action-btn" type="button" value="Edit Post" onclick="location.href='@Url.Action("Edit", "BlogPost", new { id = Model.BlogPostId })'" />
         <input class="btn btn-danger comment-action-btn" type="button" value="Delete Post" onclick="location.href='@Url.Action("Delete", "BlogPost", new { id = Model.BlogPostId })'" />
 </article>
 <hr/>
 </center>
-<h2>@Model.CommentCount comments on "@Model.Title"</h2>
+@if (Model.CommentCount == 1)
+{
+    <h2>@Model.CommentCount comment on "@Model.Title"</h2>
+}
+else
+{
+    <h2>@Model.CommentCount comments on "@Model.Title"</h2>
+}
 
     @await Html.PartialAsync("_Comments", Model.Comments)

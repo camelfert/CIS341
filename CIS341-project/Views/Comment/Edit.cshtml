@@ -4,19 +4,18 @@
 }
 
 <h1>Edit Comment</h1>
-
-<h4>Post</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" method="post" asp-for="BlogPostId">
+        <form asp-action="Edit" method="post" asp-for="CommentId">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="BlogPostId" />
+            <input type="hidden" asp-for="CommentId" />
             <div class="form-group">
-                <label asp-for="CommentContent" class="control-label"></label>
+                <label asp-for="CommentContent" class="control-label">Comment</label>
                 <input asp-for="CommentContent" class="form-control" />
                 <span asp-validation-for="CommentContent" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -25,7 +24,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to Post</a>
+    <a asp-controller="BlogPost" asp-action="Details" asp-route-id="">Back to Post</a>
 </div>
 
 @section Scripts {

@@ -4,26 +4,21 @@ using System.Xml.Linq;
 
 namespace CIS341_project.Models
 {
-    public class Reaction
+    public class CommentReaction
     {
         [Key]
         public int ReactionId { get; set; }
 
         public enum ReactionType
         {
-            Upvote,
-            Downvote
+            Upvote = 0,
+            Downvote = 1
         }
 
-        [Required]
         public ReactionType Type { get; set; }
 
-        public Account ReactionAuthor { get; set; }
-        public int ReactionAuthorId { get; set; }
+        public string ReactionAuthorId { get; set; }
 
-        // navigation properties for linking reactions to specific posts
-        public int BlogPostId { get; set; }
-        public BlogPost BlogPost { get; set; }
         public int CommentId { get; set; }
         public Comment Comment { get; set; }
     }
