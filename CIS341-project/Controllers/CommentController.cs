@@ -228,22 +228,24 @@ namespace CIS341_project.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> DeletionConfirmed (int id)
+        public async Task<IActionResult> DeletionConfirmed(int id)
         {
-            if (_context.Comments == null)
-            {
-                return Problem("Entity set 'BlogContext.Comment'  is null.");
-            }
-
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _context.Comments
+                                        .Include(c => c.Replies)
+                                        .SingleOrDefaultAsync(c => c.CommentId == id);
 
             if (comment != null)
             {
+                if (comment.Replies.Any())
+                {
+                    _context.Comments.RemoveRange(comment.Replies);
+                }
+
                 _context.Comments.Remove(comment);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Details", "BlogPost", new { id = comment.BlogPostId });
+            return RedirectToAction("Details", "BlogPost", new { id = comment?.BlogPostId });
         }
 
     }

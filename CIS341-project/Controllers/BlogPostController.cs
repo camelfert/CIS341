@@ -75,6 +75,7 @@ namespace CIS341_project.Controllers
                     Comments = blogPost.Comments.Select(c => new CommentDTO
                     {
                         BlogPostId = c.BlogPostId,
+                        ParentCommentId = c.ParentCommentId,
                         CommentId = c.CommentId,
                         CommentContent = c.CommentContent,
                         AuthorUsername = c.AuthorUsername,
@@ -136,7 +137,7 @@ namespace CIS341_project.Controllers
                     Title = blogPostDTO.Title,
                     PostAuthor = user?.UserName,
                     Content = blogPostDTO.Content,
-                    DatePublished = blogPostDTO.DatePublished
+                    DatePublished = DateTime.Now
                 };
 
                 _context.BlogPosts.Add(blogPost);

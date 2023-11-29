@@ -15,7 +15,7 @@ namespace CIS341_project.Models
         [Display(Name = "Comment")]
         public string? CommentContent { get; set; }
         public virtual ICollection<CommentReaction> CommentReactions { get; set; }
-        public virtual ICollection<Comment>? Replies { get; set; }
+        public virtual ICollection<Comment>? Replies { get; set; } = new List<Comment>();
 
         [ForeignKey(nameof(ParentComment))]
         public int? ParentCommentId { get; set; }

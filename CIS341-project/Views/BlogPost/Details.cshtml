@@ -31,9 +31,12 @@
         } 
     </div>
     <br>
-    <br>
-        <input class="btn btn-primary comment-action-btn" type="button" value="Edit Post" onclick="location.href='@Url.Action("Edit", "BlogPost", new { id = Model.BlogPostId })'" />
-        <input class="btn btn-danger comment-action-btn" type="button" value="Delete Post" onclick="location.href='@Url.Action("Delete", "BlogPost", new { id = Model.BlogPostId })'" />
+        @if (User.IsInRole("Admin") || User.IsInRole("SuperUser"))
+        {
+            <br>
+            <input class="btn btn-primary comment-action-btn" type="button" value="Edit Post" onclick="location.href='@Url.Action("Edit", "BlogPost", new { id = Model.BlogPostId })'" />
+            <input class="btn btn-danger comment-action-btn" type="button" value="Delete Post" onclick="location.href='@Url.Action("Delete", "BlogPost", new { id = Model.BlogPostId })'" />
+        }
 </article>
 <hr/>
 </center>

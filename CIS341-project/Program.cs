@@ -68,21 +68,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var authContext = services.GetRequiredService<BlogAuthenticationContext>();
-        CIS341_project.Areas.Identity.Data.DbInitializer.Initialize(authContext);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error has occurred when attempting to create the BlogAuthenticationDB database.");
-    }
-}
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
