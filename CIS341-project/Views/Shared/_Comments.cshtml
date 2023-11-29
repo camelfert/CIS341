@@ -35,7 +35,7 @@
 
                 <div class="comment-action-spacer"></div>
 
-                @if (comment.AuthorId == currentUser.userId || User.IsInRole("Admin") || User.IsInRole("SuperUser"))
+                @if (comment.AuthorId == currentUser.userId || User.IsInRole("Admin"))
                 {
                     <input class="btn btn-primary comment-action-btn btn-sm" type="button" value="Edit" onclick="location.href='@Url.Action("Edit", "Comment", new { id = comment.CommentId })'" />
                     <input class="btn btn-danger comment-action-btn btn-sm" type="button" value="Delete" onclick="location.href='@Url.Action("Delete", "Comment", new { id = comment.CommentId })'" />
@@ -91,7 +91,7 @@
 
                     <div class="comment-action-spacer"></div>
 
-                    @if (reply.AuthorId == currentUser.userId || User.IsInRole("Admin") || User.IsInRole("SuperUser"))
+                    @if (reply.AuthorId == currentUser.userId || User.IsInRole("Admin"))
                     {
                         <input class="btn btn-primary comment-action-btn btn-sm" type="button" value="Edit" onclick="location.href='@Url.Action("Edit", "Comment", new { id = reply.CommentId })'" />
                         <input class="btn btn-danger comment-action-btn btn-sm" type="button" value="Delete" onclick="location.href='@Url.Action("Delete", "Comment", new { id = reply.CommentId })'" />

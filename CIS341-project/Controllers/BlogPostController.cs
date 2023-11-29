@@ -116,7 +116,7 @@ namespace CIS341_project.Controllers
 
         // GET: BlogPostController/Create
         [HttpGet]
-        [Authorize(Roles = "Admin, SuperUser")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View();
@@ -125,7 +125,7 @@ namespace CIS341_project.Controllers
         // POST: BlogPostController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, SuperUser")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Title,Content,DatePublished")] BlogPostDTO blogPostDTO)
         {
             if (ModelState.IsValid)
@@ -149,7 +149,7 @@ namespace CIS341_project.Controllers
         }
 
         // GET: BlogPostController/Edit/5
-        [Authorize(Roles = "Admin, SuperUser")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.BlogPosts == null)
@@ -178,7 +178,7 @@ namespace CIS341_project.Controllers
         // POST: BlogPostController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, SuperUser")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, BlogPostDTO blogPostDTO)
         {
             if (id != blogPostDTO.BlogPostId)
@@ -229,7 +229,7 @@ namespace CIS341_project.Controllers
 
         // GET: BlogPostController/Delete/5
         [HttpGet]
-        [Authorize(Roles = "Admin, SuperUser")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.BlogPosts == null)
@@ -237,21 +237,32 @@ namespace CIS341_project.Controllers
                 return NotFound();
             }
 
-            var post = await _context.BlogPosts.FirstOrDefaultAsync(m => m.BlogPostId == id);
+            var blogPost = await _context.BlogPosts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.BlogPostId == id);
 
-            if (post == null)
+            if (blogPost == null)
             {
                 return NotFound();
             }
 
-            return View(post);
+            var blogPostDTO = new BlogPostDTO
+            {
+                BlogPostId = blogPost.BlogPostId,
+                Title = blogPost.Title,
+                Content = blogPost.Content,
+                DatePublished = blogPost.DatePublished,
+                PostAuthor = blogPost.PostAuthor
+            };
+
+            return View(blogPostDTO);
         }
 
 
         // POST: BlogPostController/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, SuperUser")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletionConfirmed(int id)
         {
             if (_context.BlogPosts == null)

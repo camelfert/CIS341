@@ -13,7 +13,7 @@ namespace CIS341_project.Controllers
         }
 
         //[HttpGet("Account/AdminPanel")]
-        [Authorize(Roles = "Admin, SuperUser")]
+        [Authorize(Roles = "Admin")]
         public IActionResult AdminPanel()
         {
             return View("AdminPanel");

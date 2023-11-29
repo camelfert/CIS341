@@ -7,20 +7,16 @@ namespace CIS341_project.Data
     public class InitializeUsersRoles
     {
         private readonly static string AdministratorRole = "Admin";
-        private readonly static string SuperUserRole = "SuperUser";
-        private readonly static string Password = "CrazyAdminPassword123!";
+        private readonly static string Password = "AdminPass123!";
 
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
             using (var context = new BlogContext(serviceProvider.GetRequiredService<DbContextOptions<BlogContext>>()))
             {
                 // Create identity user
-                var adminID = await EnsureUser(serviceProvider, Password, "celfe712@uwsp.edu");
+                var adminID = await EnsureUser(serviceProvider, Password, "admin@lunchbox.com");
                 // Add to role
                 await EnsureRole(serviceProvider, adminID, AdministratorRole);
-
-                var superuserID = await EnsureUser(serviceProvider, Password, "celfe712super@uwsp.edu");
-                await EnsureRole(serviceProvider, superuserID, SuperUserRole);
             }
         }
 

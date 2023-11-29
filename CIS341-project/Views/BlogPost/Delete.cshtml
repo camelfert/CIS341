@@ -1,4 +1,4 @@
-﻿@model BlogPost
+﻿@model CIS341_project.ViewModels.BlogPostDTO
 
 @{
     ViewData["Title"] = "Confirm Post Deletion";
@@ -32,9 +32,9 @@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.PostAuthor)
         </dt>
-        @*        <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Author.AccountId)
-        </dd>*@
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PostAuthor)
+        </dd>
     </dl>
 
     <form asp-action="Delete">

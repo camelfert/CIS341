@@ -34,7 +34,7 @@
                             <a class="nav-link text-dark" asp-controller="BlogPost" asp-action="Index">Posts</a>
                         </li>
 
-                        @if (User.IsInRole("Admin") || User.IsInRole("SuperUser"))
+                        @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="BlogPost" asp-action="Create">New Post</a>

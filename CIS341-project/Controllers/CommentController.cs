@@ -206,14 +206,21 @@ namespace CIS341_project.Controllers
         // GET: CommentController/Delete/5
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Comments == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var comment = await _context.Comments
+                .Select(c => new CommentDTO
+                {
+                    CommentId = c.CommentId,
+                    CommentContent = c.CommentContent,
+                    AuthorUsername = c.AuthorUsername,
+                    BlogPostId = c.BlogPostId
+                })
                 .FirstOrDefaultAsync(c => c.CommentId == id);
 
             if (comment == null)
