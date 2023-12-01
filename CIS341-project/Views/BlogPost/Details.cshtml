@@ -1,7 +1,10 @@
-﻿@model CIS341_project.ViewModels.BlogPostDTO
+﻿@using CIS341_project.Services
+@inject IUserService UserService
+@model CIS341_project.ViewModels.BlogPostDTO
 
 @{
     ViewData["Title"] = @Model.Title;
+    var currentUser = await UserService.GetUserDetailsAsync();
 }
 
 <center>
@@ -36,6 +39,10 @@
             <br>
             <input class="btn btn-primary comment-action-btn" type="button" value="Edit Post" onclick="location.href='@Url.Action("Edit", "BlogPost", new { id = Model.BlogPostId })'" />
             <input class="btn btn-danger comment-action-btn" type="button" value="Delete Post" onclick="location.href='@Url.Action("Delete", "BlogPost", new { id = Model.BlogPostId })'" />
+            @using (Html.BeginForm("ResetPostReactions", "BlogPost", new { id = Model.BlogPostId }, FormMethod.Post, true, new { @class = "post-reaction-reset" }))
+            {
+                <input class="btn btn-warning comment-action-btn" type="submit" value="Reset Reactions"  />
+            }
         }
 </article>
 <hr/>
@@ -49,4 +56,40 @@ else
     <h2>@Model.CommentCount comments on "@Model.Title"</h2>
 }
 
-    @await Html.PartialAsync("_Comments", Model.Comments)
+<div class="comments-section">
+    @foreach (var comment in Model.Comments)
+    {
+        @Html.Partial("_CommentPartial", comment)
+    }
+</div>
+
+@if (currentUser.userId != null)
+{
+    <div id="new-comment-form">
+        @Html.Partial("_CreateCommentPartial", new CommentDTO { BlogPostId = Model.BlogPostId })
+    </div>
+}
+else
+{
+    <p>Please <a href="~/Identity/Account/Login">login</a> or <a href="~/Identity/Account/Register">register an account</a> to leave a comment.</p>
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var replyButtons = document.getElementsByClassName('reply-button');
+        for (var i = 0; i < replyButtons.length; i++) {
+            replyButtons[i].addEventListener('click', function () {
+                var buttonIdParts = this.id.split('-');
+                var commentId = buttonIdParts[buttonIdParts.length - 1];
+                var replyForm = document.getElementById('reply-form-' + commentId);
+                replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+    });
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

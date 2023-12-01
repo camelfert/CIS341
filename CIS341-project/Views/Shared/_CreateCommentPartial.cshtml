@@ -1,0 +1,16 @@
+﻿@model CIS341_project.ViewModels.CommentDTO
+
+@using (Html.BeginForm("Create", "Comment", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <textarea asp-for="CommentContent" class="form-control comment-input" placeholder="Add a comment..."></textarea>
+        <span asp-validation-for="CommentContent" class="text-danger"></span>
+    </div>
+
+    @Html.HiddenFor(m => m.BlogPostId)
+    @Html.HiddenFor(m => m.ParentCommentId)
+    <br />
+    <button type="submit" class="btn btn-primary">Comment</button>
+}

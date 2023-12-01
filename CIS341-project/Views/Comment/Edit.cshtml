@@ -18,14 +18,12 @@
             <br />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
+                <a class="btn btn-info" asp-controller="BlogPost" asp-action="Details" asp-route-id="@Model.BlogPostId">Back to Post</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-controller="BlogPost" asp-action="Details" asp-route-id="">Back to Post</a>
-</div>
 
 @section Scripts {
     @{

@@ -63,6 +63,7 @@ namespace CIS341_project.Controllers
                     return NotFound();
                 }
 
+                var userId = _userManager.GetUserId(User);
                 // MAKE SURE to add any new items for proper data passing HERE, inc. comments
                 var blogPostDTO = new BlogPostDTO
                 {
@@ -72,15 +73,7 @@ namespace CIS341_project.Controllers
                     DatePublished = blogPost.DatePublished,
                     PostAuthor = blogPost.PostAuthor,
                     CommentCount = blogPost.Comments.Count,
-                    Comments = blogPost.Comments.Select(c => new CommentDTO
-                    {
-                        BlogPostId = c.BlogPostId,
-                        ParentCommentId = c.ParentCommentId,
-                        CommentId = c.CommentId,
-                        CommentContent = c.CommentContent,
-                        AuthorUsername = c.AuthorUsername,
-                        AuthorId = c.AuthorId
-                    }).ToList()
+                    Comments = PopulateReplies(blogPost.Comments.Where(c => c.ParentCommentId == null), userId).ToList()
                 };
 
                 ViewData["BlogPostId"] = blogPost.BlogPostId;
@@ -92,26 +85,41 @@ namespace CIS341_project.Controllers
                 ViewData["postUpvoteCount"] = postUpvoteCount;
                 ViewData["postDownvoteCount"] = postDownvoteCount;
 
-                var userId = _userManager.GetUserId(User);
                 var userReaction = _context.PostReactions.FirstOrDefault(r => r.BlogPostId == id && r.ReactionAuthorId == userId);
                 ViewData["UserReactionType"] = userReaction?.Type.ToString();
-
-                foreach (var comment in blogPostDTO.Comments)
-                {
-                    int commentUpvoteCount = _context.CommentReactions.Count(r => r.Type == CommentReaction.ReactionType.Upvote && r.CommentId == comment.CommentId);
-                    int commentDownvoteCount = _context.CommentReactions.Count(r => r.Type == CommentReaction.ReactionType.Downvote && r.CommentId == comment.CommentId);
-
-                    ViewData[$"commentUpvoteCount{comment.CommentId}"] = commentUpvoteCount;
-                    ViewData[$"commentDownvoteCount{comment.CommentId}"] = commentDownvoteCount;
-
-                    var userCommentReaction = _context.CommentReactions.FirstOrDefault(r => r.CommentId == comment.CommentId && r.ReactionAuthorId == userId);
-                    ViewData[$"UserCommentReactionType{comment.CommentId}"] = userCommentReaction?.Type.ToString();
-                }
 
                 return View(blogPostDTO);
             }
 
             return NotFound();
+        }
+
+        private IEnumerable<CommentDTO> PopulateReplies(IEnumerable<Comment> comments, string userId)
+        {
+            foreach (var comment in comments)
+            {
+                var commentDTO = new CommentDTO
+                {
+                    CommentId = comment.CommentId,
+                    CommentContent = comment.CommentContent,
+                    BlogPostId = comment.BlogPostId,
+                    AuthorId = comment.AuthorId,
+                    AuthorUsername = comment.AuthorUsername,
+                    ParentCommentId = comment.ParentCommentId,
+                    Replies = PopulateReplies(comment.Replies, userId).ToList()
+                };
+
+                int commentUpvoteCount = _context.CommentReactions.Count(r => r.Type == CommentReaction.ReactionType.Upvote && r.CommentId == comment.CommentId);
+                int commentDownvoteCount = _context.CommentReactions.Count(r => r.Type == CommentReaction.ReactionType.Downvote && r.CommentId == comment.CommentId);
+
+                ViewData[$"commentUpvoteCount{comment.CommentId}"] = commentUpvoteCount;
+                ViewData[$"commentDownvoteCount{comment.CommentId}"] = commentDownvoteCount;
+
+                var userCommentReaction = _context.CommentReactions.FirstOrDefault(r => r.CommentId == comment.CommentId && r.ReactionAuthorId == userId);
+                ViewData[$"UserCommentReactionType{comment.CommentId}"] = userCommentReaction?.Type.ToString();
+
+                yield return commentDTO;
+            }
         }
 
         // GET: BlogPostController/Create
@@ -281,5 +289,15 @@ namespace CIS341_project.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ResetPostReactions(int id)
+        {
+            var reactions = _context.PostReactions.Where(r => r.BlogPostId == id);
+            _context.PostReactions.RemoveRange(reactions);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = id });
+        }
     }
 }

@@ -1,0 +1,79 @@
+﻿@using CIS341_project.Services
+@inject IUserService UserService
+@model CIS341_project.ViewModels.CommentDTO
+
+@{
+    var currentUser = await UserService.GetUserDetailsAsync();
+}
+
+    <div class="comment-bubble">
+        <div class="comment-body">
+            <p class="comment-author">@Model.AuthorUsername said:</p>
+            <p class="comment-content">@Model.CommentContent</p>
+        </div>
+        <div class="comment-actions">
+            <div class="comment-reactions">
+                @using (Html.BeginForm("Create", "CommentReaction", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("CommentId", Model.CommentId)
+                    @Html.Hidden("Type", "Upvote")
+                    <button class="btn btn-outline-success btn-sm comment-vote-btn" asp-action="Create" asp-controller="CommentReaction" asp-route-reactionType="Upvote" disabled="@ViewData[$"UserCommentReactionType{Model.CommentId}"]?.Equals("Upvote")">@ViewData[$"commentUpvoteCount{Model.CommentId}"] 👍</button>
+                }
+
+                @using (Html.BeginForm("Create", "CommentReaction", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("CommentId", Model.CommentId)
+                    @Html.Hidden("Type", "Downvote")
+                    <button class="btn btn-outline-danger btn-sm comment-vote-btn" asp-action="Create" asp-controller="CommentReaction" asp-route-reactionType="Downvote" disabled="@ViewData[$"UserCommentReactionType{Model.CommentId}"]?.Equals("Downvote")">@ViewData[$"commentDownvoteCount{Model.CommentId}"] 👎</button>
+                }
+            </div>
+
+            <div class="comment-action-spacer"></div>
+
+            @if (Model.AuthorId == currentUser.userId || User.IsInRole("Admin"))
+            {
+                <input class="btn btn-primary comment-action-btn btn-sm" type="button" value="Edit" onclick="location.href='@Url.Action("Edit", "Comment", new { id = Model.CommentId })'" />
+                <input class="btn btn-danger comment-action-btn btn-sm" type="button" value="Delete" onclick="location.href='@Url.Action("Delete", "Comment", new { id = Model.CommentId })'" />
+            }
+
+            @if (User.IsInRole("Admin"))
+            {
+                using (Html.BeginForm("ResetCommentReactions", "Comment", new { id = Model.CommentId }, FormMethod.Post))
+                {
+                    <input type="submit" value="Reset Reactions" class="btn btn-warning comment-action-btn btn-sm" type="button" />
+                }
+            }
+
+            @if (currentUser.userId != null)
+            {
+                <button class="reply-button btn btn-success comment-action-btn btn-sm" id="reply-btn-@Model.CommentId">Reply</button>
+                <div id="reply-form-@Model.CommentId" class="reply-form" style="display:none;">
+                    @using (Html.BeginForm("CreateReply", "Comment", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("BlogPostId", ViewData["BlogPostId"])
+                        @Html.Hidden("parentCommentId", Model.CommentId)
+
+                        @Html.TextArea("CommentContent", "", new { @class = "form-control comment-input" })
+                        @Html.ValidationMessage("CommentContent", "", new { @class = "text-danger" })
+
+                        <input type="submit" value="Reply" class="reply-button" />
+                    }
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+    @if (Model.Replies.Any())
+    {
+        <div class="replies">
+            @foreach (var reply in Model.Replies)
+            {
+                @Html.Partial("_CommentPartial", reply)
+            }
+        </div>
+    }

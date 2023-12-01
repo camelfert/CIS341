@@ -35,3 +35,6 @@ a.navbar-brand {
     word-break: break-all;
     color: #685ab2;
 }
+.post-reaction-reset {
+    display: inline;
+}

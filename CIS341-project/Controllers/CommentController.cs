@@ -255,5 +255,15 @@ namespace CIS341_project.Controllers
             return RedirectToAction("Details", "BlogPost", new { id = comment?.BlogPostId });
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ResetCommentReactions(int id)
+        {
+            var reactions = _context.CommentReactions.Where(r => r.CommentId == id);
+            _context.CommentReactions.RemoveRange(reactions);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "BlogPost", new { id = _context.Comments.Find(id)?.BlogPostId });
+        }
     }
 }
