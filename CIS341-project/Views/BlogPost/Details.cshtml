@@ -14,26 +14,30 @@
 </header>
 <article>
     <p>@Model.Content</p>
-    <div class="reaction-buttons">
-        @using (Html.BeginForm("Create", "PostReaction", FormMethod.Post))
+        @if (!User.IsInRole("Banned"))
         {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(m => m.BlogPostId)
-            @Html.Hidden("Type", "Upvote")
+            <div class="reaction-buttons">
+                @using (Html.BeginForm("Create", "PostReaction", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.BlogPostId)
+                    @Html.Hidden("Type", "Upvote")
 
-            <button class="btn btn-outline-success btn-sm comment-vote-btn" asp-action="Create" asp-controller="PostReaction" asp-route-blogPostId="@Model.BlogPostId" asp-route-reactionType="Upvote" disabled="@ViewData["UserReactionType"]?.Equals("Upvote")">@ViewData["postUpvoteCount"] 👍</button>
+                    <button class="btn btn-outline-success btn-sm comment-vote-btn" asp-action="Create" asp-controller="PostReaction" asp-route-blogPostId="@Model.BlogPostId" asp-route-reactionType="Upvote" disabled="@ViewData["UserReactionType"]?.Equals("Upvote")">@ViewData["postUpvoteCount"] 👍</button>
+                }
+
+                @using (Html.BeginForm("Create", "PostReaction", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.BlogPostId)
+                    @Html.Hidden("Type", "Downvote")
+
+                    <button class="btn btn-outline-danger btn-sm comment-vote-btn" asp-action="Create" asp-controller="PostReaction" asp-route-blogPostId="@Model.BlogPostId" asp-route-reactionType="Downvote" disabled="@ViewData["UserReactionType"]?.Equals("Downvote")">@ViewData["postDownvoteCount"] 👎</button>
+                }
+            </div>
+            <br>
         }
 
-        @using (Html.BeginForm("Create", "PostReaction", FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(m => m.BlogPostId)
-            @Html.Hidden("Type", "Downvote")
-
-            <button class="btn btn-outline-danger btn-sm comment-vote-btn" asp-action="Create" asp-controller="PostReaction" asp-route-blogPostId="@Model.BlogPostId" asp-route-reactionType="Downvote" disabled="@ViewData["UserReactionType"]?.Equals("Downvote")">@ViewData["postDownvoteCount"] 👎</button>
-        } 
-    </div>
-    <br>
         @if (User.IsInRole("Admin"))
         {
             <br>
@@ -44,6 +48,7 @@
                 <input class="btn btn-warning comment-action-btn" type="submit" value="Reset Reactions"  />
             }
         }
+
 </article>
 <hr/>
 </center>
@@ -63,11 +68,17 @@ else
     }
 </div>
 
-@if (currentUser.userId != null)
+@if (currentUser.userId != null && !User.IsInRole("Banned"))
 {
     <div id="new-comment-form">
         @Html.Partial("_CreateCommentPartial", new CommentDTO { BlogPostId = Model.BlogPostId })
     </div>
+}
+else if (User.IsInRole("Banned"))
+{
+    <center>
+        <div class="alert alert-danger">You have been banned from commenting and reacting. Contact a Lunchbox Blog admin to appeal your ban.</div>
+    </center>
 }
 else
 {

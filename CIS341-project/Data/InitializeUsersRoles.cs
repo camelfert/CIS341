@@ -7,6 +7,7 @@ namespace CIS341_project.Data
     public class InitializeUsersRoles
     {
         private readonly static string AdministratorRole = "Admin";
+        private readonly static string BannedRole = "Banned";
         private readonly static string Password = "AdminPass123!";
 
         public static async Task Initialize(IServiceProvider serviceProvider)
@@ -17,6 +18,10 @@ namespace CIS341_project.Data
                 var adminID = await EnsureUser(serviceProvider, Password, "admin@lunchbox.com");
                 // Add to role
                 await EnsureRole(serviceProvider, adminID, AdministratorRole);
+
+                // create Banned role, but do not assign any user to it by default
+                var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                await RoleManager.CreateAsync(new IdentityRole(BannedRole));
             }
         }
 
@@ -45,6 +50,7 @@ namespace CIS341_project.Data
             else
                 throw new Exception("userManager null");
         }
+
 
         // Check that role exists --> create new rule if none exists
         private static async Task EnsureRole(IServiceProvider serviceProvider, string uid, string role)

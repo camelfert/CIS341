@@ -36,7 +36,6 @@ namespace CIS341_project.Data
         }
 
         public DbSet<BlogPost> BlogPosts { get; set; }
-        public DbSet<Account> Accounts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<PostReaction> PostReactions { get; set; }
         public DbSet<CommentReaction> CommentReactions { get; set; }

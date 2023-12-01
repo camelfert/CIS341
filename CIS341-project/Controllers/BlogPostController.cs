@@ -94,6 +94,7 @@ namespace CIS341_project.Controllers
             return NotFound();
         }
 
+        [AllowAnonymous]
         private IEnumerable<CommentDTO> PopulateReplies(IEnumerable<Comment> comments, string userId)
         {
             foreach (var comment in comments)
@@ -136,7 +137,7 @@ namespace CIS341_project.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Title,Content,DatePublished")] BlogPostDTO blogPostDTO)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !User.IsInRole("Banned"))
             {
                 var user = await _userManager.GetUserAsync(User);
 
@@ -160,6 +161,11 @@ namespace CIS341_project.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
+            if (User.IsInRole("Banned"))
+            {
+                return NotFound();
+            }
+
             if (id == null || _context.BlogPosts == null)
             {
                 return NotFound();
@@ -189,6 +195,11 @@ namespace CIS341_project.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, BlogPostDTO blogPostDTO)
         {
+            if (User.IsInRole("Banned"))
+            {
+                return NotFound();
+            }
+
             if (id != blogPostDTO.BlogPostId)
             {
                 return NotFound();
@@ -225,7 +236,7 @@ namespace CIS341_project.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = id });
             }
             return View(blogPostDTO);
         }
@@ -240,6 +251,11 @@ namespace CIS341_project.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
+            if (User.IsInRole("Banned"))
+            {
+                return NotFound();
+            }
+
             if (id == null || _context.BlogPosts == null)
             {
                 return NotFound();
@@ -273,6 +289,11 @@ namespace CIS341_project.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletionConfirmed(int id)
         {
+            if (User.IsInRole("Banned"))
+            {
+                return NotFound();
+            }
+
             if (_context.BlogPosts == null)
             {
                 return Problem("Entity set 'BlogContext.Post'  is null.");

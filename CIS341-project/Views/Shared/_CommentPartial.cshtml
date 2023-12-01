@@ -12,6 +12,8 @@
             <p class="comment-content">@Model.CommentContent</p>
         </div>
         <div class="comment-actions">
+        @if (!User.IsInRole("Banned"))
+        {
             <div class="comment-reactions">
                 @using (Html.BeginForm("Create", "CommentReaction", FormMethod.Post))
                 {
@@ -29,7 +31,7 @@
                     <button class="btn btn-outline-danger btn-sm comment-vote-btn" asp-action="Create" asp-controller="CommentReaction" asp-route-reactionType="Downvote" disabled="@ViewData[$"UserCommentReactionType{Model.CommentId}"]?.Equals("Downvote")">@ViewData[$"commentDownvoteCount{Model.CommentId}"] 👎</button>
                 }
             </div>
-
+        }
             <div class="comment-action-spacer"></div>
 
             @if (Model.AuthorId == currentUser.userId || User.IsInRole("Admin"))
@@ -42,11 +44,11 @@
             {
                 using (Html.BeginForm("ResetCommentReactions", "Comment", new { id = Model.CommentId }, FormMethod.Post))
                 {
-                    <input type="submit" value="Reset Reactions" class="btn btn-warning comment-action-btn btn-sm" type="button" />
+                    <input type="submit" value="Reset Reactions" class="btn btn-warning comment-action-btn btn-sm" />
                 }
             }
 
-            @if (currentUser.userId != null)
+            @if (currentUser.userId != null && !User.IsInRole("Banned"))
             {
                 <button class="reply-button btn btn-success comment-action-btn btn-sm" id="reply-btn-@Model.CommentId">Reply</button>
                 <div id="reply-form-@Model.CommentId" class="reply-form" style="display:none;">

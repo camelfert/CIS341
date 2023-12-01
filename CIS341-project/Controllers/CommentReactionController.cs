@@ -47,6 +47,11 @@ namespace CIS341_project.Controllers
         [Authorize]
         public async Task<IActionResult> Create(int commentId, string type)
         {
+            if (User.IsInRole("Banned"))
+            {
+                return NotFound();
+            }
+
             var userId = _userManager.GetUserId(User);
 
             var existingReaction = await _context.CommentReactions

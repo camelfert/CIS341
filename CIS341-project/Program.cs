@@ -75,6 +75,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/Views/Shared/Error", "?statusCode={0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

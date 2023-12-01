@@ -72,7 +72,7 @@ namespace CIS341_project.Controllers
         [Authorize]
         public async Task<IActionResult> Create([Bind("BlogPostId,CommentId,CommentContent,AuthorId,AuthorUsername")] CommentDTO commentDTO)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !User.IsInRole("Banned"))
             {
                 var (userId, userName) = await _userService.GetUserDetailsAsync();
 
@@ -108,7 +108,7 @@ namespace CIS341_project.Controllers
         {
             var (userId, userName) = await _userService.GetUserDetailsAsync();
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !User.IsInRole("Banned"))
             {
                 var reply = new Comment
                 {
@@ -133,6 +133,11 @@ namespace CIS341_project.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
+            if (User.IsInRole("Banned"))
+            {
+                return NotFound();
+            }
+
             if (id == null || _context.Comments == null)
             {
                 return NotFound();
@@ -162,6 +167,11 @@ namespace CIS341_project.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int id, CommentDTO commentDTO)
         {
+            if (User.IsInRole("Banned"))
+            {
+                return NotFound();
+            }
+
             if (id != commentDTO.CommentId)
             {
                 return NotFound();
@@ -208,6 +218,11 @@ namespace CIS341_project.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
+            if (User.IsInRole("Banned"))
+            {
+                return NotFound();
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -237,6 +252,11 @@ namespace CIS341_project.Controllers
         [Authorize]
         public async Task<IActionResult> DeletionConfirmed(int id)
         {
+            if (User.IsInRole("Banned"))
+            {
+                return NotFound();
+            }
+
             var comment = await _context.Comments
                                         .Include(c => c.Replies)
                                         .SingleOrDefaultAsync(c => c.CommentId == id);
