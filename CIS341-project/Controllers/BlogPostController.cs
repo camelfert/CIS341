@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace CIS341_project.Controllers
 {
+    /// <summary>
+    /// BlogPostController manages all of the CRUD and CRUD-related functions for blog posts.
+    /// </summary>
     public class BlogPostController : Controller
     {
         private readonly BlogContext _context;
@@ -24,6 +27,10 @@ namespace CIS341_project.Controllers
             _userManager = userManager;
         }
 
+        /// <summary>
+        /// Populates BlogPost/Index view with list of all blog posts in the database.
+        /// </summary>
+        /// <returns>A view with the list of blog posts.</returns>
         // GET: BlogPostController
         [AllowAnonymous]
         public async Task<IActionResult> Index()
@@ -46,7 +53,11 @@ namespace CIS341_project.Controllers
         }
 
         // GET: BlogPostController/Details/5
-
+        /// <summary>
+        /// Creates the main View of a specific blog post based on an ID and populates it with DB info.
+        /// </summary>
+        /// <param name="id">The ID of the blog post.</param>
+        /// <returns>A view of the blog post with populated details/info; otherwise, returns NotFound.</returns>
         [AllowAnonymous]
         public ActionResult Details(int? id)
         {
@@ -123,6 +134,11 @@ namespace CIS341_project.Controllers
             }
         }
 
+        // <summary>
+        /// Presents the view containing the form for creating a new blog post.
+        /// </summary>
+        /// <returns>A view with the form for creating a blog post.</returns>
+        [HttpGet]
         // GET: BlogPostController/Create
         [HttpGet]
         [Authorize(Roles = "Admin")]
@@ -131,6 +147,11 @@ namespace CIS341_project.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Processes the request for creation of a blog post based on the data provided to the View & form.
+        /// </summary>
+        /// <param name="blogPostDTO">The blog post data transfer object containing the data to create a new post.</param>
+        /// <returns>Redirects user to the blog post list/Index view if successful; otherwise returns the same view with validation errors.</returns>
         // POST: BlogPostController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -157,6 +178,11 @@ namespace CIS341_project.Controllers
             return View(blogPostDTO);
         }
 
+        // <summary>
+        /// Presents the view containing the form for editing a blog post.
+        /// </summary>
+        /// <param name="id">The ID of the blog post to edit.</param>
+        /// <returns>A view with the form for editing a blog post.</returns>
         // GET: BlogPostController/Edit/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
@@ -189,6 +215,11 @@ namespace CIS341_project.Controllers
             return View(blogPostDTO);
         }
 
+        /// <summary>
+        /// Processes the request for editing a blog post based on the data provided to the View & form, as well as the ID of the specific blog post.
+        /// </summary>
+        /// <param name="blogPostDTO">The blog post data transfer object containing the data to create a new post.</param>
+        /// <returns>Redirects user back to the blog post if successful; otherwise returns the same view with validation errors.</returns>
         // POST: BlogPostController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -246,6 +277,11 @@ namespace CIS341_project.Controllers
             return _context.BlogPosts.Any(e => e.BlogPostId == id);
         }
 
+        /// <summary>
+        /// Confirms the deletion of a specific blog post.
+        /// </summary>
+        /// <param name="id">The ID of the blog post to delete.</param>
+        /// <returns>A view asking for deletion confirmation if the blog post is found and valid for deletion; otherwise, NotFound.</returns>
         // GET: BlogPostController/Delete/5
         [HttpGet]
         [Authorize(Roles = "Admin")]
@@ -282,7 +318,11 @@ namespace CIS341_project.Controllers
             return View(blogPostDTO);
         }
 
-
+        /// <summary>
+        /// Processes the deletion of a specific blog post after user confirmation.
+        /// </summary>
+        /// <param name="id">The ID of the blog post to delete.</param>
+        /// <returns>Redirects to the blog post list/Index view if successful.</returns>
         // POST: BlogPostController/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -310,6 +350,11 @@ namespace CIS341_project.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Removes/resets both Upvote and Downvote reaction counts for a specific blog post.
+        /// </summary>
+        /// <param name="id">The ID of the blog post to reset.</param>
+        /// <returns>Redirects back to the blog post if successful.</returns>
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ResetPostReactions(int id)

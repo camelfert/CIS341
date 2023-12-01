@@ -23,11 +23,15 @@ namespace CIS341_project.Models
         [Display(Name = "Content")]
         public string Content { get; set; }
 
+        // done as DateTime.Now() in practice
         [Display(Name = "Publication Date")]
         [DataType(DataType.Date)]
         public DateTime DatePublished { get; set; }
 
+        // holds collection of PostReactions for specific blog post
         public virtual ICollection<PostReaction> PostReactions { get; set; }
+
+        // holds collection of Comments for specific blog post
         public virtual ICollection<Comment> Comments { get; set; }
 
     }

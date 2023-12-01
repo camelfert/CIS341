@@ -13,6 +13,9 @@ using static CIS341_project.Models.PostReaction;
 
 namespace CIS341_project.Controllers
 {
+    /// <summary>
+    /// CommentController manages all of the CRUD and CRUD-related functions for comments.
+    /// </summary>
     public class CommentController : Controller
     {
         private readonly BlogContext _context;
@@ -26,12 +29,11 @@ namespace CIS341_project.Controllers
             _userManager = userManager;
         }
 
-        // GET: CommentController
-        public ActionResult Index()
-        {
-            return View();
-        }
-
+        /// <summary>
+        /// Populates a comment with the necessary data from the database.
+        /// </summary>
+        /// <param name="id">The ID of the specific comment.</param>
+        /// <returns>A comment binded with the corresponding data based on the ID.</returns>
         // GET: CommentController/Details/5
         [Authorize]
         public ActionResult Details(int id)
@@ -65,7 +67,10 @@ namespace CIS341_project.Controllers
             return View(commentDTO);
         }
 
-
+        /// <summary>
+        /// Processes the request for creation of a comment based on the data provided to the Create Comment Partial View "form".
+        /// </summary>
+        /// <returns>Redirects user to the same blog post the comment was posted on if successful; otherwise returns the same view but with validation errors.</returns>
         // POST: CommentController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -101,6 +106,11 @@ namespace CIS341_project.Controllers
             return View(new CommentDTO());
         }
 
+        /// <summary>
+        /// Processes the request for creation of a reply to a comment based on the data provided to the Reply form.
+        /// </summary>
+        /// <param name="parentCommentId">The ID of the Parent(first/top) comment being replied to.</param>
+        /// <returns>Redirects user to the same blog post the comment was posted on if successful; otherwise returns the same view but with validation errors.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -128,7 +138,11 @@ namespace CIS341_project.Controllers
 
             return View(commentDTO);
         }
-
+        // <summary>
+        /// Presents the view containing the form for editing a specific comment.
+        /// </summary>
+        /// <param name="id">The ID of the comment to edit.</param>
+        /// <returns>A view with the form for editing a comment. Otherwise, returns NotFound.</returns>
         // GET: CommentController/Edit/5
         [Authorize]
         public async Task<IActionResult> Edit(int id)
@@ -161,6 +175,12 @@ namespace CIS341_project.Controllers
             return View(commentDTO);
         }
 
+        /// <summary>
+        /// Processes the request for editing a comment based on the data provided to the View & form, as well as the ID of the specific comment.
+        /// </summary>
+        /// <param name="id">The ID of the comment to edit.</param>
+        /// <param name="commentDTO">The comment data transfer object containing the data to edit a specific comment..</param>
+        /// <returns>Redirects user back to the blog post if successful; otherwise returns the same view but with validation errors.</returns>
         // POST: CommentController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -213,6 +233,11 @@ namespace CIS341_project.Controllers
             return _context.Comments.Any(c => c.CommentId == id);
         }
 
+        /// <summary>
+        /// Confirms the deletion of a specific comment.
+        /// </summary>
+        /// <param name="id">The ID of the comment to delete.</param>
+        /// <returns>A view asking for deletion confirmation if the comment is found and valid for deletion; otherwise, returns NotFound.</returns>
         // GET: CommentController/Delete/5
         [HttpGet]
         [Authorize]
@@ -246,6 +271,11 @@ namespace CIS341_project.Controllers
             return View(comment);
         }
 
+        /// <summary>
+        /// Processes the deletion of a specific comment after user confirmation.
+        /// </summary>
+        /// <param name="id">The ID of the commentto delete.</param>
+        /// <returns>Redirects to the specific blog post view for the deleted comment if successful.</returns>
         // POST: CommentController/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -275,6 +305,11 @@ namespace CIS341_project.Controllers
             return RedirectToAction("Details", "BlogPost", new { id = comment?.BlogPostId });
         }
 
+        /// <summary>
+        /// Removes/resets both Upvote and Downvote reaction counts for a specific comment.
+        /// </summary>
+        /// <param name="id">The ID of the comment to reset.</param>
+        /// <returns>Redirects back to the blog post if successful.</returns>
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ResetCommentReactions(int id)

@@ -9,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CIS341_project.Controllers
 {
+    /// <summary>
+    /// PostReactionController manages the creation of reactions (Upvotes/Downvotes) on comments.
+    /// </summary>
     public class CommentReactionController : Controller
     {
         private readonly BlogContext _context;
@@ -22,25 +25,12 @@ namespace CIS341_project.Controllers
             _userManager = userManager;
         }
 
-        // GET: PostReactionsController
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        // GET: PostReactionsController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: PostReactionsController/Create
-        [Authorize]
-        public ActionResult Create()
-        {
-            return View();
-        }
-
+        /// <summary>
+        /// Processes the request for adding either an upvote or downvote on a specific comment.
+        /// </summary>
+        /// <param name="commentId">The ID of the specific comment being reacted to.</param>
+        /// <param name="type">The type of reaction, whether it is an Upvote or Downvote.</param>
+        /// <returns>Redirects user back to the specific blog post where the comment was posted in a refresh-like fashion.</returns>
         // POST: CommentReactionsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -77,52 +67,6 @@ namespace CIS341_project.Controllers
 
             var blogPostId = _context.Comments.Where(c => c.CommentId == commentId).Select(c => c.BlogPostId).FirstOrDefault();
             return RedirectToAction("Details", "BlogPost", new { id = blogPostId });
-        }
-
-        // GET: PostReactionsController/Edit/5
-        [Authorize]
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: PostReactionsController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: PostReactionsController/Delete/5
-        [Authorize]
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: PostReactionsController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
 
     }
