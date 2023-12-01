@@ -45,7 +45,7 @@ public class AdminController : Controller
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
-            ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
+            ViewBag.ErrorMessage = $"A user with ID = {userId} could not be found.";
             return View("NotFound");
         }
 
@@ -82,7 +82,7 @@ public class AdminController : Controller
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
-            ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
+            ViewBag.ErrorMessage = $"A user with ID = {userId} could not be found.";
             return View("NotFound");
         }
 
@@ -91,7 +91,7 @@ public class AdminController : Controller
 
         if (!result.Succeeded)
         {
-            ModelState.AddModelError("", "Cannot remove user existing roles");
+            ModelState.AddModelError("", "There was a problem removing the selected roles from this user.");
             return View(model);
         }
 
@@ -99,7 +99,7 @@ public class AdminController : Controller
 
         if (!result.Succeeded)
         {
-            ModelState.AddModelError("", "Cannot add selected roles to user");
+            ModelState.AddModelError("", "There was an error when trying to give user a role.");
             return View(model);
         }
 
