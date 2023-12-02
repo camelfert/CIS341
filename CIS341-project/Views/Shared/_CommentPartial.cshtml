@@ -12,6 +12,7 @@
             <p class="comment-content">@Model.CommentContent</p>
         </div>
         <div class="comment-actions">
+        <!-- banned users cannot react, so hide these -->
         @if (!User.IsInRole("Banned"))
         {
             <div class="comment-reactions">
@@ -34,6 +35,7 @@
         }
             <div class="comment-action-spacer"></div>
 
+            <!-- only allow comment author and admins to edit a comment -->
             @if (Model.AuthorId == currentUser.userId || User.IsInRole("Admin"))
             {
                 <input class="btn btn-primary comment-action-btn btn-sm" type="button" value="Edit" onclick="location.href='@Url.Action("Edit", "Comment", new { id = Model.CommentId })'" />
@@ -48,6 +50,7 @@
                 }
             }
 
+            <!-- reply form, only registered, non-banned users can reply to comments -->
             @if (currentUser.userId != null && !User.IsInRole("Banned"))
             {
                 <button class="reply-button btn btn-success comment-action-btn btn-sm" id="reply-btn-@Model.CommentId">Reply</button>
@@ -70,6 +73,7 @@
 
     </div>
 
+<!-- render any replies on loop if they exist -->
     @if (Model.Replies.Any())
     {
         <div class="replies">

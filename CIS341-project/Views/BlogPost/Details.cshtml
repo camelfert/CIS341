@@ -14,6 +14,7 @@
 </header>
 <article>
     <p>@Model.Content</p>
+        <!-- banned users cannot react to posts, so hide these -->
         @if (!User.IsInRole("Banned"))
         {
             <div class="reaction-buttons">
@@ -37,6 +38,8 @@
             </div>
             <br>
         }
+
+        <!-- only admins can edit/delete/reset, much less post, so hide these -->
 
         @if (User.IsInRole("Admin"))
         {
@@ -68,6 +71,7 @@ else
     }
 </div>
 
+<!-- banned users and non-registered users cannot comment -->
 @if (currentUser.userId != null && !User.IsInRole("Banned"))
 {
     <div id="new-comment-form">
@@ -85,6 +89,7 @@ else
     <p>Please <a href="~/Identity/Account/Login">login</a> or <a href="~/Identity/Account/Register">register an account</a> to leave a comment.</p>
 }
 
+<!-- toggles reply form visibility when reply button clicked -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var replyButtons = document.getElementsByClassName('reply-button');
