@@ -35,10 +35,12 @@ namespace CIS341_project.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+            // retrieves async data from DB
             var blogPosts = await _context.BlogPosts
             .OrderByDescending(p => p.DatePublished)
             .ToListAsync();
 
+            // transforms data into DTO
             var blogPostDTOs = blogPosts.Select(bp => new BlogPostDTO
             {
                 BlogPostId = bp.BlogPostId,
@@ -49,6 +51,7 @@ namespace CIS341_project.Controllers
                 CommentCount = bp.Comments != null ? bp.Comments.Count : 0,
             }).ToList();
 
+            // returns view with data
             return View(blogPostDTOs);
         }
 

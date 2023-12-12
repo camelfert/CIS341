@@ -15,7 +15,7 @@ namespace CIS341_project.Data
                 return; 
             }
 
-            // dummy data seeding for DB
+            // dummy blog posts seeding for DB
             var blogPosts = new BlogPost[]
             {
             new BlogPost {
@@ -52,9 +52,11 @@ namespace CIS341_project.Data
 
             };
 
+            // adds posts to DB and saves them
             context.BlogPosts.AddRange(blogPosts);
             context.SaveChanges();
 
+            // dummy/example comments for dummy posts
             var comments = new Comment[]
             {
                 new Comment
@@ -87,9 +89,11 @@ namespace CIS341_project.Data
                 }
             };
 
+            // adds comments to DB and saves them
             context.Comments.AddRange(comments);
             context.SaveChanges();
 
+            // sample post reactions on dummy posts
             var postReactions = new PostReaction[]
             {
                 new PostReaction
@@ -124,9 +128,11 @@ namespace CIS341_project.Data
                 }
             };
 
+            // adds post reactions to DB and saves them
             context.PostReactions.AddRange(postReactions);
             context.SaveChanges();
 
+            // sample comment reactions on dummy comments
             var commentReactions = new CommentReaction[]
             {
                 new CommentReaction
@@ -149,6 +155,7 @@ namespace CIS341_project.Data
                 },
             };
 
+            // adds post reactions to DB and saves them
             context.CommentReactions.AddRange(commentReactions);
             context.SaveChanges();
         }

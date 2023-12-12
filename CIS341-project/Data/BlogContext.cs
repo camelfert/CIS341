@@ -13,22 +13,26 @@ namespace CIS341_project.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // every blog post can have many comments associated to one specific post, FK BlogPostId
             modelBuilder.Entity<BlogPost>()
                 .HasMany(b => b.Comments)
                 .WithOne(c => c.BlogPost)
                 .HasForeignKey(c => c.BlogPostId);
 
+            // every comment has a parent comment that can have many replies attached, FK ParentCommentId
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.ParentComment)
                 .WithMany(c => c.Replies)
                 .HasForeignKey(c => c.ParentCommentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // every blog post can have many post reactions associated to one specific post, FK BlogPostId
             modelBuilder.Entity<BlogPost>()
                 .HasMany(b => b.PostReactions)
                 .WithOne(r => r.BlogPost)
                 .HasForeignKey(r => r.BlogPostId);
 
+            // every comment can have many comment reactions associated to one specific comment, FK CommentId
             modelBuilder.Entity<Comment>()
                 .HasMany(b => b.CommentReactions)
                 .WithOne(c => c.Comment)

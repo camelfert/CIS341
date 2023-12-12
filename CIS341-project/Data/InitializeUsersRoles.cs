@@ -14,34 +14,34 @@ namespace CIS341_project.Data
         {
             using (var context = new BlogContext(serviceProvider.GetRequiredService<DbContextOptions<BlogContext>>()))
             {
-                // Create identity user
+                // create identity user
                 var adminID = await EnsureUser(serviceProvider, Password, "admin@lunchbox.com");
-                // Add to role
+                // add to admin role
                 await EnsureRole(serviceProvider, adminID, AdministratorRole);
 
-                // create Banned role, but do not assign any user to it by default
+                // create "Banned" role, but do not assign any user to it by default
                 var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 await RoleManager.CreateAsync(new IdentityRole(BannedRole));
             }
         }
 
-        // Check that user exists with provided email address --> create new user if none exists
+        // check that user exists with provided email address --> create new user if none exists
         private static async Task<string> EnsureUser(IServiceProvider serviceProvider, string userPw, string UserName)
         {
-            // Access the UserManager service
+            // access the UserManager service
             var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
             if(userManager != null)
             {
-                // Find user by email address
+                // find user by email address
                 var user = await userManager.FindByNameAsync(UserName);
                 if (user == null)
                 {
-                    // Create new user if none exists
+                    // create new user if none exists
                     user = new IdentityUser { UserName = UserName, Email = UserName };
                     await userManager.CreateAsync(user, userPw);
                 }
 
-                // Confirm the new user so that we can log in
+                // confirm the new user so that we can log in
                 user.EmailConfirmed = true;
                 await userManager.UpdateAsync(user);
 
@@ -52,21 +52,21 @@ namespace CIS341_project.Data
         }
 
 
-        // Check that role exists --> create new rule if none exists
+        // check that role exists --> create new rule if none exists
         private static async Task EnsureRole(IServiceProvider serviceProvider, string uid, string role)
         {
-            // Access RoleManager service
+            // access RoleManager service
             var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
 
             if (roleManager != null)
             {
-                // Check whether role exists --> if not, create new role with the provided role name
+                // check whether role exists --> if not, create new role with the provided role name
                 if (!await roleManager.RoleExistsAsync(role))
                 {
                     await roleManager.CreateAsync(new IdentityRole(role));
                 }
 
-                // Retrieve user with the provided ID and add to the specified role
+                // retrieve user with the provided ID and add to the specified role
                 var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
                 if (userManager != null)
                 {
